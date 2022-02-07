@@ -7,16 +7,33 @@
 		"vscode": "^1.64.0"
 	},
 	"categories": [
-		"Other"
+		"Other",
+		"Programming Languages"
 	],
 	"activationEvents": [
+		"onCommand:markdownforlatex.init",
         "onCommand:markdownforlatex.parseToLatex",
 		"onCommand:markdownforlatex.renderImages",
 		"onCommand:markdownforlatex.createPdf"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"languages": [{
+            "id": "lmd",
+            "aliases": ["LatexMarkdown", "lmd"],
+            "extensions": [".lmd"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "lmd",
+            "scopeName": "source.lmd",
+            "path": "./syntaxes/lmd.tmLanguage.json"
+        }],
 		"commands": [
+			{
+				"command": "markdownforlatex.init",
+				"title": "Markdown For Latex: Init LMD-Directory"
+			},
 			{
 				"command": "markdownforlatex.parseToLatex",
 				"title": "Markdown For Latex: Parse to Latex"

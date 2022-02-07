@@ -1,0 +1,174 @@
+? \title{Beispiel-LMD-Dokument}
+? \author{Marcus Wunderlich}
+
+_startdocument
+
+? \maketitle
+? \tableofcontents
+? \pagebreak 
+% sdjfsdfsd 
+
+##### Chapter
+#### Section
+### Subsection
+## Subsubsection
+
+_setpdf "C:\Users\marcu\Desktop\Studium\Sonstiges\Latex\MWarkDown\test\test.pdf"
+
+# Paragraph
+	> eine  Definition  ist eine Definition
+	>Definition  ist eine Definition
+	, Stichpunkt text 
+	,Stichpunkt  text $ $
+	. Aufzählung text
+	[ blank test $absdnfpwenf$ \textbf{sdkjfsdfsd}
+		$$ lsdjbf sdlsdfd$$
+	.Aufzählung  text
+		, Stichpunkt text
+			, Stichpunkt text
+			,Stichpunkt  text
+			. Aufzählung text
+			.Aufzählung  text
+		,Stichpunkt  text
+		. Aufzählung text
+		.Aufzählung  text
+	+ Vorteil text
+	+Vorteil  text
+	- Nachteil text
+	-Nachteil  text
+	* Satz text
+	*Satz  text
+	" Erklärung
+	eg Beispiel
+	=> Schlussfolgerung
+
+# Paragraph
+? \begin{center}
+img testimg 0.5
+_crimg "testimg" 1
+? \end{center}
+
+##### Chapter
+	> eine  Definition  ist eine Definition
+	>Definition  ist eine Definition
+	, Stichpunkt text
+	,Stichpunkt  text
+	. Aufzählung text
+	.Aufzählung  text
+		, Stichpunkt text
+			, Stichpunkt text
+			,Stichpunkt  text
+			. Aufzählung text
+			.Aufzählung  text
+		,Stichpunkt  text
+		. Aufzählung text
+		.Aufzählung  text
+	+ Vorteil text
+	+Vorteil  text
+	- Nachteil text
+	-Nachteil  text
+	* Satz text
+	*Satz  text
+	" Erklärung
+	eg Beispiel
+	=> Schlussfolgerung
+
+#### Section
+	> eine  Definition  ist eine Definition
+	>Definition  ist eine Definition
+	, Stichpunkt text
+	,Stichpunkt  text
+	. Aufzählung text
+	.Aufzählung  text
+		, Stichpunkt text
+			, Stichpunkt text
+			,Stichpunkt  text
+			. Aufzählung text
+			.Aufzählung  text
+		,Stichpunkt  text
+		. Aufzählung text
+		.Aufzählung  text
+	+ Vorteil text
+	+Vorteil  text
+	- Nachteil text
+	-Nachteil  text
+	* Satz text
+	*Satz  text
+	" Erklärung
+	eg Beispiel
+	=> Schlussfolgerung
+
+### Subsection
+	> eine  Definition  ist eine Definition
+	>Definition  ist eine Definition
+	, Stichpunkt text
+	,Stichpunkt  text
+	. Aufzählung text
+	.Aufzählung  text
+		, Stichpunkt text
+			, Stichpunkt text
+			,Stichpunkt  text
+			. Aufzählung text
+			.Aufzählung  text
+		,Stichpunkt  text
+		. Aufzählung text
+		.Aufzählung  text
+	+ Vorteil text
+	+Vorteil  text
+	- Nachteil text
+	-Nachteil  text
+	* Satz text
+	*Satz  text
+	" Erklärung
+	eg Beispiel
+	=> Schlussfolgerung
+
+## Subsubsection
+	> eine  Definition  ist eine Definition
+	>Definition  ist eine Definition
+	, Stichpunkt text
+	,Stichpunkt  text
+	. Aufzählung text
+	.Aufzählung  text
+		, Stichpunkt text
+			, Stichpunkt text
+			,Stichpunkt  text
+			. Aufzählung text
+			.Aufzählung  text
+		,Stichpunkt  text
+		. Aufzählung text
+		.Aufzählung  text
+	+ Vorteil text
+	+Vorteil  text
+	- Nachteil text
+	-Nachteil  text
+	* Satz text
+	*Satz  text
+	" Erklärung
+	eg Beispiel
+	=> Schlussfolgerung
+
+# Paragraph
+	> eine  Definition  ist eine Definition
+	>Definition  ist eine Definition
+	, Stichpunkt text
+	,Stichpunkt  text
+	. Aufzählung text
+	.Aufzählung  text
+		, Stichpunkt text
+			, Stichpunkt text
+			,Stichpunkt  text
+			. Aufzählung text
+			.Aufzählung  text
+		,Stichpunkt  text
+		. Aufzählung text
+		.Aufzählung  text
+	+ Vorteil text
+	+Vorteil  text
+	- Nachteil text
+	-Nachteil  text
+	* Satz text
+	*Satz  text
+	" Erklärung
+	eg Beispiel
+	=> Schlussfolgerung

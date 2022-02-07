@@ -1,0 +1,138 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "LatexMarkdown",
+	"patterns": [
+		{
+			"include": "#line"
+		}
+	],
+	"repository": {
+		"headline": {
+			"name": "string",
+			"begin": "#",
+			"end": "\\n",
+			"patterns": [
+				{
+					"include": "#latexcontent"
+				}
+			]
+		},
+		"content": {
+			"name": "emphasis",
+			"match": ".*"
+		},
+		"commentline": {
+			"name": "comment.line",
+			"begin": "%",
+			"match": "%.*",
+			"end": "\\n"
+		},
+		"latexline": {
+			"name": "other",
+			"begin": "\\?",
+			"beginCaptures": {
+				"0": {
+					"name": "invalid.illegal"
+				}
+			},
+			"end": "\\n",
+			"patterns": [
+				{
+					"include": "#latexcontent"
+				}
+			]
+		},
+		"sepline": {
+			"name": "constant",
+			"match": "_+\\n"
+		},
+		"noteline": {
+			"name": "meta.note",
+			"begin": "^\\t+(,|\\.|\\*|\\+|\\-|>|=>|\"|eg|!)",
+			"beginCaptures": {
+				"0": {
+					"name": "markup.bold"
+				}
+			},
+			"end": "\\n",
+			"patterns": [
+				{
+					"include": "#latexcontent"
+				}
+			]
+		},
+		"imageline": {
+			"name": "keyword.image",
+			"begin": "img",
+			"beginCaptures": {
+				"0": {
+					"name": "markup.bold"
+				}
+			},
+			"end": "\\n",
+			"match": "img\\s(\\S)*\\s0\\.[0-9]+"
+		},
+		"mathline": {
+			"name": "support.class.math.block.tex",
+			"begin": "\\t*\\$\\$",
+			"end": "\\$\\$\\n",
+			"patterns": [
+				{
+					"include": "#latexcontent"
+				}
+			]
+		},
+		"blankline": {
+			"name": "meta.embedded.latex",
+			"begin": "\\t*\\[",
+			"beginCaptures": {
+				"0": {
+					"name": "markup.bold"
+				}
+			},
+			"end": "\\n",
+			"patterns": [
+				{
+					"include": "text.tex"
+				}
+			]
+		},
+		"latexcontent": {
+			"name": "meta.embedded.latex",
+			"patterns": [
+				{
+					"include": "text.tex"
+				}
+			]
+		},
+		"line": {
+			"patterns": [
+				{
+					"include": "#commentline"
+				},
+				{
+					"include": "#headline"
+				},
+				{
+					"include": "#latexline"
+				},
+				{
+					"include": "#sepline"
+				},
+				{
+					"include": "#noteline"
+				},
+				{
+					"include": "#imageline"
+				},
+				{
+					"include": "#mathline"
+				},
+				{
+					"include": "#blankline"
+				}
+			]
+		}
+	},
+	"scopeName": "source.lmd"
+}
