@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{mwdreport}[MWarkDown basis]
+\ProvidesClass{.lmd/mwdreport}[MWarkDown basis]
 
 \LoadClass[10pt,fleqn,titlepage]{report}
 

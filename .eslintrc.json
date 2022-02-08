@@ -1,25 +1,30 @@
 {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "@typescript-eslint/naming-convention": "warn",
-        "@typescript-eslint/semi": ["warn", "never"],
-        "semi": [2, "never"],
-        "no-unexpected-multiline": "error",
-        "curly": "warn",
-        "eqeqeq": ["warn", "smart"],
-        "no-throw-literal": "warn"
-    },
-    "ignorePatterns": [
-        "out",
-        "dist",
-        "**/*.d.ts"
-    ]
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+	"plugins": [
+		"@typescript-eslint",
+		"@typescript-eslint/eslint-plugin",
+		"prettier",
+		"unused-imports"
+	],
+	"extends": ["plugin:prettier/recommended"],
+	"rules": {
+		"@typescript-eslint/naming-convention": "warn",
+		"@typescript-eslint/semi": ["warn", "never"],
+		"@typescript-eslint/explicit-function-return-type": ["error"],
+		"no-unexpected-multiline": "error",
+		"unused-imports/no-unused-imports": "warn",
+		"unused-imports/no-unused-vars": "warn",
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto"
+			}
+		]
+	},
+	"ignorePatterns": ["out", "dist", "**/*.d.ts"]
 }
