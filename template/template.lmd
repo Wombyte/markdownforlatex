@@ -1,13 +1,13 @@
-? \title{Beispiel-LMD-Dokument}
-? \author{Marcus Wunderlich}
+\title{Beispiel-LMD-Dokument}
+\author{Marcus Wunderlich}
 
 % above this line is preamble
 _startdocument
 % below this line is content
 
-? \maketitle
-? \tableofcontents
-? \pagebreak 
+\maketitle
+\tableofcontents
+\pagebreak 
 
 % set image source file
 _setpdf "C:\Users\marcu\Desktop\Studium\Sonstiges\Latex\MWarkDown\test\test.pdf"
@@ -47,11 +47,11 @@ _setpdf "C:\Users\marcu\Desktop\Studium\Sonstiges\Latex\MWarkDown\test\test.pdf"
 	=> Schlussfolgerung
 
 # Paragraph
-? \begin{center}
+\begin{center}
 % image with name 'testimg' is inserted
 % if such an image does not exist in images-directory
 % the pdf shows the name in red
 img testimg 0.5
 % the image is created from page 1 of the current image-source-pdf 
 _crimg "testimg" 1
-? \end{center}
+\end{center}

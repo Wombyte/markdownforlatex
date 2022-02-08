@@ -1,138 +1,94 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"scopeName": "source.lmd",
 	"name": "LatexMarkdown",
 	"patterns": [
-		{
-			"include": "#line"
-		}
+		{ "include": "#body" },
+		{ "include": "#line" },
+		{ "include": "#latexcontent" }
 	],
 	"repository": {
+		"body": {
+			"name": "lmd.body",
+			"begin": "_startdocument.*$\n?",
+			"beginCaptures": {
+				"0": { "name": "invalid.illegal" }
+			},
+			"patterns": [
+				{ "include": "#headline" },
+				{ "include": "#command" },
+				{ "include": "#note" },
+				{ "include": "#defnote" },
+				{ "include": "#latexcontent" }
+			],
+			"repository": {},
+			"end": "(?=not)possible"
+		},
 		"headline": {
-			"name": "string",
+			"name": "markup.bold",
 			"begin": "#",
-			"end": "\\n",
+			"end": "$\n?"
+		},
+		"command": {
+			"name": "markup.italic",
+			"begin": "_",
+			"end": "$\n?"
+		},
+		"notewithhead": {
+			"begin": "\\S+\\s\\s",
+			"end": "$\n?",
+			"beginCaptures": {
+				"0": { "name": "markup.bold" }
+			},
+			"patterns": [{ "include": "#latexcontent" }]
+		},
+		"notewithouthead": {
+			"begin": "\\s",
+			"end": "$\n?",
+			"patterns": [{ "include": "#latexcontent" }]
+		},
+		"note": {
+			"begin": "(,|\\.|\\*|\\+|\\-|=>|\"|eg|!|\\[\\S*\\])",
+			"beginCaptures": {
+				"0": { "name": "markup.bold" }
+			},
+			"end": "$\n?",
+			"patterns": [
+				{ "include": "#notewithhead" },
+				{ "include": "#notewithouthead" }
+			]
+		},
+		"defwithouthead": {
+			"begin": " ([^ ]+ )+ ",
+			"beginCaptures": {
+				"0": { "patterns": [{ "include": "#latexcontent" }] }
+			},
+			"end": "$\n?",
 			"patterns": [
 				{
-					"include": "#latexcontent"
+					"begin": "([^ ]+ )+ ",
+					"beginCaptures": {
+						"0": { "name": "markup.bold" }
+					},
+					"end": "$\n?",
+					"patterns": [{ "include": "#latexcontent" }]
 				}
 			]
 		},
-		"content": {
-			"name": "emphasis",
-			"match": ".*"
-		},
-		"commentline": {
-			"name": "comment.line",
-			"begin": "%",
-			"match": "%.*",
-			"end": "\\n"
-		},
-		"latexline": {
-			"name": "other",
-			"begin": "\\?",
+		"defnote": {
+			"begin": ">",
 			"beginCaptures": {
-				"0": {
-					"name": "invalid.illegal"
-				}
+				"0": { "name": "markup.bold" }
 			},
-			"end": "\\n",
+			"end": "$\n?",
 			"patterns": [
-				{
-					"include": "#latexcontent"
-				}
-			]
-		},
-		"sepline": {
-			"name": "constant",
-			"match": "_+\\n"
-		},
-		"noteline": {
-			"name": "meta.note",
-			"begin": "^\\t+(,|\\.|\\*|\\+|\\-|>|=>|\"|eg|!)",
-			"beginCaptures": {
-				"0": {
-					"name": "markup.bold"
-				}
-			},
-			"end": "\\n",
-			"patterns": [
-				{
-					"include": "#latexcontent"
-				}
-			]
-		},
-		"imageline": {
-			"name": "keyword.image",
-			"begin": "img",
-			"beginCaptures": {
-				"0": {
-					"name": "markup.bold"
-				}
-			},
-			"end": "\\n",
-			"match": "img\\s(\\S)*\\s0\\.[0-9]+"
-		},
-		"mathline": {
-			"name": "support.class.math.block.tex",
-			"begin": "\\t*\\$\\$",
-			"end": "\\$\\$\\n",
-			"patterns": [
-				{
-					"include": "#latexcontent"
-				}
-			]
-		},
-		"blankline": {
-			"name": "meta.embedded.latex",
-			"begin": "\\t*\\[",
-			"beginCaptures": {
-				"0": {
-					"name": "markup.bold"
-				}
-			},
-			"end": "\\n",
-			"patterns": [
-				{
-					"include": "text.tex"
-				}
+				{ "include": "#notewithhead" },
+				{ "include": "#defwithouthead" }
 			]
 		},
 		"latexcontent": {
 			"name": "meta.embedded.latex",
-			"patterns": [
-				{
-					"include": "text.tex"
-				}
-			]
-		},
-		"line": {
-			"patterns": [
-				{
-					"include": "#commentline"
-				},
-				{
-					"include": "#headline"
-				},
-				{
-					"include": "#latexline"
-				},
-				{
-					"include": "#sepline"
-				},
-				{
-					"include": "#noteline"
-				},
-				{
-					"include": "#imageline"
-				},
-				{
-					"include": "#mathline"
-				},
-				{
-					"include": "#blankline"
-				}
-			]
+			"patterns": [{ "include": "text.tex" }]
 		}
-	},
-	"scopeName": "source.lmd"
+	}
 }
