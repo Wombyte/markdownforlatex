@@ -12,49 +12,130 @@
 			"name": "lmd.body",
 			"begin": "_startdocument.*$\n?",
 			"beginCaptures": {
-				"0": { "name": "invalid.illegal" }
+				"0": { "name": "mld.command" }
 			},
 			"patterns": [
 				{ "include": "#headline" },
 				{ "include": "#command" },
 				{ "include": "#note" },
 				{ "include": "#defnote" },
+				{ "include": "#imageline" },
 				{ "include": "#latexcontent" }
 			],
 			"repository": {},
 			"end": "(?=not)possible"
 		},
 		"headline": {
-			"name": "markup.bold",
+			"name": "mld.heading",
 			"begin": "#",
 			"end": "$\n?"
 		},
 		"command": {
-			"name": "markup.italic",
+			"name": "mld.command",
 			"begin": "_",
 			"end": "$\n?"
 		},
-		"notewithhead": {
-			"begin": "\\S+\\s\\s",
-			"end": "$\n?",
-			"beginCaptures": {
-				"0": { "name": "markup.bold" }
-			},
-			"patterns": [{ "include": "#latexcontent" }]
-		},
+
 		"notewithouthead": {
 			"begin": "\\s",
 			"end": "$\n?",
 			"patterns": [{ "include": "#latexcontent" }]
 		},
+
 		"note": {
-			"begin": "(,|\\.|\\*|\\+|\\-|=>|\"|eg|!|\\[\\S*\\])",
+			"patterns": [
+				{ "include": "#defaultnote" },
+				{ "include": "#plusnote" },
+				{ "include": "#minusnote" },
+				{ "include": "#theorynote" },
+				{ "include": "#italicnote" }
+			]
+		},
+		"defaultnote": {
+			"begin": "(,|\\.|=>|\\[\\S*\\])",
 			"beginCaptures": {
-				"0": { "name": "markup.bold" }
+				"0": { "name": "mld.note.default" }
 			},
 			"end": "$\n?",
 			"patterns": [
-				{ "include": "#notewithhead" },
+				{
+					"begin": "\\S+\\s\\s",
+					"end": "$\n?",
+					"beginCaptures": {
+						"0": { "name": "mld.note.default" }
+					},
+					"patterns": [{ "include": "#latexcontent" }]
+				},
+				{ "include": "#notewithouthead" }
+			]
+		},
+		"theorynote": {
+			"begin": "\\*",
+			"beginCaptures": {
+				"0": { "name": "mld.note.theory" }
+			},
+			"end": "$\n?",
+			"patterns": [
+				{
+					"begin": "\\S+\\s\\s",
+					"end": "$\n?",
+					"beginCaptures": {
+						"0": { "name": "mld.note.theory" }
+					},
+					"patterns": [{ "include": "#latexcontent" }]
+				},
+				{ "include": "#notewithouthead" }
+			]
+		},
+		"plusnote": {
+			"begin": "\\+",
+			"beginCaptures": {
+				"0": { "name": "mld.note.advantage" }
+			},
+			"end": "$\n?",
+			"patterns": [
+				{
+					"begin": "\\S+\\s\\s",
+					"end": "$\n?",
+					"beginCaptures": {
+						"0": { "name": "mld.note.advantage" }
+					},
+					"patterns": [{ "include": "#latexcontent" }]
+				},
+				{ "include": "#notewithouthead" }
+			]
+		},
+		"minusnote": {
+			"begin": "\\-",
+			"beginCaptures": {
+				"0": { "name": "mld.note.disadvantage" }
+			},
+			"end": "$\n?",
+			"patterns": [
+				{
+					"begin": "\\S+\\s\\s",
+					"end": "$\n?",
+					"beginCaptures": {
+						"0": { "name": "mld.note.disadvantage" }
+					},
+					"patterns": [{ "include": "#latexcontent" }]
+				},
+				{ "include": "#notewithouthead" }
+			]
+		},
+		"italicnote": {
+			"name": "mld.note.italic",
+			"begin": "(\"|eg)",
+			"end": "$\n?",
+			"patterns": [
+				{
+					"begin": "\\S+\\s\\s",
+					"end": "$\n?",
+					"beginCaptures": {
+						"0": { "name": "mld.note.italicbold" }
+					},
+					"patterns": [{ "include": "#latexcontent" }]
+				},
 				{ "include": "#notewithouthead" }
 			]
 		},
@@ -68,7 +149,7 @@
 				{
 					"begin": "([^ ]+ )+ ",
 					"beginCaptures": {
-						"0": { "name": "markup.bold" }
+						"0": { "name": "mld.note.definition" }
 					},
 					"end": "$\n?",
 					"patterns": [{ "include": "#latexcontent" }]
@@ -78,13 +159,25 @@
 		"defnote": {
 			"begin": ">",
 			"beginCaptures": {
-				"0": { "name": "markup.bold" }
+				"0": { "name": "mld.note.definition" }
 			},
 			"end": "$\n?",
 			"patterns": [
-				{ "include": "#notewithhead" },
+				{
+					"begin": "\\S+\\s\\s",
+					"end": "$\n?",
+					"beginCaptures": {
+						"0": { "name": "mld.note.definition" }
+					},
+					"patterns": [{ "include": "#latexcontent" }]
+				},
 				{ "include": "#defwithouthead" }
 			]
+		},
+		"imageline": {
+			"name": "keyword.image",
+			"begin": "img",
+			"match": "img\\s(\\S)*\\s0\\.[0-9]+"
 		},
 		"latexcontent": {
 			"name": "meta.embedded.latex",

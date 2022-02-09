@@ -7,9 +7,12 @@
     - generation of HelloWorld-Extension (alert "HelloWorld" on Command)
     - (Debugging)
 2. Add [Language Grammar](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
-   _ How to create a language-extension? (the generated files can merge into an existing extension without causing problems)
-   _ tiny example for `tmlanguage.json`-grammar \* Scope Inspector
-   <br/><br/><br/>
+    - How to create a language-extension? (the generated files can merge into an existing extension without causing problems)
+    - tiny example for `tmlanguage.json`-grammar \* Scope Inspector
+3. [Understand TextMate-Grammar](https://www.apeth.com/nonblog/stories/textmatebundle.html)
+    - good explanation (in contrast to the [documentation](https://macromates.com/manual/en/language_grammars)
+
+<br/><br/><br/>
 
 ## Related Links
 

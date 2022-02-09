@@ -1,0 +1,76 @@
+{
+	"name": "dark+lmd",
+	"type": "dark",
+	"include": "./dark_plus.json",
+	"colors": {},
+	"tokenColors": [
+		{
+			"scope": ["comment"],
+			"settings": {
+				"foreground": "#6b995580",
+				"fontStyle": "italic"
+			}
+		},
+		{
+			"scope": ["mld.command"],
+			"settings": {
+				"fontStyle": "italic",
+				"foreground": "#a8005d"
+			}
+		},
+		{
+			"scope": ["mld.heading"],
+			"settings": {
+				"foreground": "#a06b56",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"scope": ["mld.note.default"],
+			"settings": {
+				"foreground": "#868686",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"scope": ["mld.note.definition"],
+			"settings": {
+				"foreground": "#80a8ff",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"scope": ["mld.note.advantage"],
+			"settings": {
+				"foreground": "#8bff80",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"scope": ["mld.note.disadvantage"],
+			"settings": {
+				"foreground": "#ff8080",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"scope": ["mld.note.theory"],
+			"settings": {
+				"foreground": "#ffdd80",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"scope": ["mld.note.italic"],
+			"settings": {
+				"fontStyle": "italic"
+			}
+		},
+		{
+			"scope": ["mld.note.italicbold"],
+			"settings": {
+				"fontStyle": "italic bold"
+			}
+		}
+	]
+}
