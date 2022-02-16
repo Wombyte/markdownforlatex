@@ -1,41 +1,33 @@
 import * as vscode from 'vscode'
 import initLmdDirectory from './commands/initLmdDirectory'
+import renderImages from './commands/renderImages'
 import * as path from 'path'
 
 export function activate(context: vscode.ExtensionContext): void {
-	const templateDirPath = path.join(context.extensionUri.fsPath, 'template')
-	let initDir = vscode.commands.registerCommand('markdownforlatex.init', () =>
-		initLmdDirectory(templateDirPath)
+	// Markdown For Latex: Init LMD-Directory
+	let initDir = vscode.commands.registerCommand(
+		'markdownforlatex.initLmdDir',
+		() => initLmdDirectoryFunc(context)
 	)
+
+	// Markdown For Latex: Parse to Latex
 	let parseToLatex = vscode.commands.registerCommand(
 		'markdownforlatex.parseToLatex',
-		() => {
-			const editor = vscode.window.activeTextEditor
-			if (editor == null || editor.document == null) {
-				vscode.window.showErrorMessage('No file open')
-				return
-			}
-			const doc = editor.document
-			if (doc.languageId !== 'lmd') {
-				vscode.window.showErrorMessage('Open File is not an lmd-File')
-				return
-			}
-			const firstline = doc.lineAt(0)
-			vscode.window.showInformationMessage(firstline.text)
-		}
+		() => parseToLatexFunc(context)
 	)
+
+	// Markdown For Latex: Render Images
 	let renderImages = vscode.commands.registerCommand(
 		'markdownforlatex.renderImages',
-		() => {
-			vscode.window.showInformationMessage('Render Images')
-		}
+		() => renderImagesFunc(context)
 	)
+
+	// Markdown For Latex: Create PDF
 	let createPdf = vscode.commands.registerCommand(
 		'markdownforlatex.createPdf',
-		() => {
-			vscode.window.showInformationMessage('Create PDF')
-		}
+		() => createPdfFunc(context)
 	)
+
 	context.subscriptions.push(initDir)
 	context.subscriptions.push(parseToLatex)
 	context.subscriptions.push(renderImages)
@@ -59,4 +51,21 @@ function getOpenLmdFile(): vscode.TextDocument | undefined {
 		return undefined
 	}
 	return doc
+}
+
+function initLmdDirectoryFunc(context: vscode.ExtensionContext): void {
+	const templateDirPath = path.join(context.extensionUri.fsPath, 'template')
+	initLmdDirectory(templateDirPath)
+}
+
+function parseToLatexFunc(context: vscode.ExtensionContext): void {}
+
+function renderImagesFunc(context: vscode.ExtensionContext): void {
+	const lmdfile = getOpenLmdFile()
+	if (!lmdfile) return
+	renderImages(lmdfile)
+}
+
+function createPdfFunc(context: vscode.ExtensionContext): void {
+	vscode.window.showInformationMessage('Create PDF')
 }

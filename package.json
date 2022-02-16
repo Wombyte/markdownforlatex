@@ -12,7 +12,7 @@
 		"Themes"
 	],
 	"activationEvents": [
-		"onCommand:markdownforlatex.init",
+		"onCommand:markdownforlatex.initLmdDir",
 		"onCommand:markdownforlatex.parseToLatex",
 		"onCommand:markdownforlatex.renderImages",
 		"onCommand:markdownforlatex.createPdf"
@@ -48,7 +48,7 @@
 		],
 		"commands": [
 			{
-				"command": "markdownforlatex.init",
+				"command": "markdownforlatex.initLmdDir",
 				"title": "Markdown For Latex: Init LMD-Directory"
 			},
 			{
@@ -92,6 +92,7 @@
 	"dependencies": {
 		"@types/fs-extra": "^9.0.13",
 		"fs-extra": "^10.0.0",
-		"fse": "^4.0.1"
+		"fse": "^4.0.1",
+		"node-poppler": "^5.1.2"
 	}
 }

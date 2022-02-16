@@ -8,9 +8,6 @@ This is a VsCode-Extension for my markdown-ish syntax that creates PDF-files via
 
 The following dependencies have to be installed:
 
--   VsCode ([download](https://code.visualstudio.com/))
--   Latex
-
 <br>
 
 ## Extension Settings
