@@ -91,3 +91,9 @@ context.subscriptions.push(varcommandname)
     },
 ],
 ```
+
+## VsCode
+
+### <u>Find Theme Files</u>
+
+-   folder: `{user}\AppData\Local\Programs\Microsoft VS Code\resources\app\extensions\theme-defaults\themes`

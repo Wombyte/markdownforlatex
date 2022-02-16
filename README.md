@@ -5,21 +5,24 @@ This is a VsCode-Extension for my markdown-ish syntax that creates PDF-files via
 <br>
 
 ## Requirements
+
 The following dependencies have to be installed:
-* VsCode ([download](https://code.visualstudio.com/))
+
+-   VsCode ([download](https://code.visualstudio.com/))
+-   Latex
 
 <br>
 
 ## Extension Settings
 
 Settings in `contributes.configuration`:
-* `myExtension.enable`: enable/disable this extension
+
+-   `myExtension.enable`: enable/disable this extension
+-   customization commands for the note commands
 
 <br>
 
 ## Known Issues
-
-
 
 <!-- -----------------------------------------------------------------------------------------------------------
 ## Following extension guidelines

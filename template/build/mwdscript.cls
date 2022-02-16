@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{.lmd/mwdscript}[Uni Skript]
+\ProvidesClass{build/mwdscript}[Uni Skript]
 
-\LoadClass{.lmd/mwdreport}
+\LoadClass{build/mwdreport}
 
 % coloneqq
 \usepackage{mathtools}

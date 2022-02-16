@@ -1,6 +1,8 @@
 \title{Beispiel-LMD-Dokument}
 \author{Marcus Wunderlich}
 
+\renewcommand{\explbody}[1]{\textcolor{gray}{\textit{#1}}}
+
 % above this line is preamble
 _startdocument
 % below this line is content
@@ -24,7 +26,6 @@ _setpdf "C:\Users\marcu\Desktop\Studium\Sonstiges\Latex\MWarkDown\test\test.pdf"
 	, Stichpunkt text 
 	,Stichpunkt  text $ $
 	. Aufzählung text
-	[ blank test $absdnfpwenf$ \textbf{sdkjfsdfsd}
 		$$ lsdjbf sdlsdfd$$
 	.Aufzählung  text
 		, Stichpunkt text
