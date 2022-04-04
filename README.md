@@ -1,6 +1,6 @@
 # Markdown For Latex
 
-This is a VsCode-Extension for my markdown-ish syntax that creates PDF-files via latex.
+This is a VsCode-Extension for my markdown-ish syntax that creates PDF-Files via latex.
 
 <br>
 
