@@ -6,7 +6,7 @@ This is a VsCode-Extension for my markdown-ish syntax that creates PDF-files via
 
 ## Requirements
 
-The following dependencies have to be installed:
+Yet no further dependencies have to be installed.
 
 <br>
 
