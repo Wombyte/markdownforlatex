@@ -2,6 +2,8 @@ import * as vscode from 'vscode'
 import initLmdDirectory from './commands/initLmdDirectory'
 import renderImages from './commands/renderImages'
 import * as path from 'path'
+import LmdParser from './parser/LmdParser'
+import { writeFile } from 'fs'
 
 export function activate(context: vscode.ExtensionContext): void {
 	// Markdown For Latex: Init LMD-Directory
@@ -53,12 +55,34 @@ function getOpenLmdFile(): vscode.TextDocument | undefined {
 	return doc
 }
 
+function getLatexFilePath(lmdFile: vscode.TextDocument): string {
+	const fileName = path.basename(lmdFile.fileName)
+	const fileNameWithoutExtension = fileName.substring(
+		0,
+		fileName.indexOf('.')
+	)
+	const dirName = path.dirname(lmdFile.fileName)
+	return path.join(dirName, fileNameWithoutExtension + '.tex')
+}
+
 function initLmdDirectoryFunc(context: vscode.ExtensionContext): void {
 	const templateDirPath = path.join(context.extensionUri.fsPath, 'template')
 	initLmdDirectory(templateDirPath)
 }
 
-function parseToLatexFunc(context: vscode.ExtensionContext): void {}
+function parseToLatexFunc(context: vscode.ExtensionContext): void {
+	const lmdFile = getOpenLmdFile()
+	if (!lmdFile) return
+	const latexFilePath = getLatexFilePath(lmdFile)
+
+	const parser = new LmdParser(lmdFile)
+	const result = parser.parse()
+
+	writeFile(latexFilePath, result, function (err) {
+		if (err) throw err
+		vscode.window.showInformationMessage('Latex File created')
+	})
+}
 
 function renderImagesFunc(context: vscode.ExtensionContext): void {
 	const lmdfile = getOpenLmdFile()

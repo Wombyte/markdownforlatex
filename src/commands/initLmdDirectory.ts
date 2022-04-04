@@ -8,13 +8,13 @@ export default function initLmdDirectory(templateDirPath: string): void {
 	if (dstPath === undefined) return
 
 	const dirName = dstPath.substring(dstPath.lastIndexOf('\\') + 1)
-	const InputBoxOptions = {
+	const inputBoxOptions = {
 		value: dirName,
 		title: 'File Name',
 		prompt: 'test',
 	}
 	vscode.window
-		.showInputBox(InputBoxOptions)
+		.showInputBox(inputBoxOptions)
 		.then((name) => createLmdDirectory(templateDirPath, dstPath, name))
 }
 
@@ -32,7 +32,6 @@ function createLmdDirectory(
 		vscode.window.showErrorMessage(
 			'Template directory could not be copied. See console for more information.'
 		)
-		console.error(e)
 	}
 
 	// rename lmd-file
@@ -45,7 +44,6 @@ function createLmdDirectory(
 		vscode.window.showErrorMessage(
 			'The .lmd-file could not be renamed. See console for more information.'
 		)
-		console.error(e)
 	}
 }
 

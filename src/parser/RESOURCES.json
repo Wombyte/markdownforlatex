@@ -1,0 +1,10 @@
+{
+	"commands": {
+		"startdocument": "startdocument"
+	},
+	"commandIndicator": "_",
+	"noteIndictor": "^\t*(,|\\.|\\+|-|>|\\*|eg|\"|=>)",
+	"sectionIndictor": "#",
+	"imageIndicator": "^img \\w* [0-9](\\.[0-9]+)?",
+	"commentIndicator": "^\t*%"
+}
