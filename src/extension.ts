@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import initLmdDirectory from './commands/initLmdDirectory'
 import renderImages from './commands/renderImages'
 import * as path from 'path'
-import LmdParser from './parser/LmdParser'
+import LmdParser from './parser/LmdToLatexParser'
 import { writeFile } from 'fs'
 
 export function activate(context: vscode.ExtensionContext): void {

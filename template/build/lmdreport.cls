@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{build/mwdreport}[MWarkDown basis]
+\ProvidesClass{build/lmdreport}[MWarkDown basis]
 
 \LoadClass[10pt,fleqn,titlepage]{report}
 
@@ -23,15 +23,15 @@
 
 % list environment
 \RequirePackage{enumitem}
-\newlist{mwdlist}{enumerate}{3}
-\setlist[mwdlist,1]{
+\newlist{notes}{enumerate}{3}
+\setlist[notes,1]{
 	label={\bf\arabic*.},
 	leftmargin=30pt,
 	topsep=2pt,
 	itemsep=3pt,
 	parsep=0pt
 }
-\setlist[mwdlist,2]{
+\setlist[notes,2]{
 	label={\bf\roman*)},
 	leftmargin=30pt,
 	topsep=2pt,
@@ -39,7 +39,7 @@
 	parsep=0pt,
 	before*=\small
 }
-\setlist[mwdlist,3]{
+\setlist[notes,3]{
 	label={\bf\alph*)},
 	leftmargin=30pt,
 	topsep=2pt,
@@ -83,7 +83,8 @@
 \defineNoteCommand{nota}{\ding{46}}{\bf}{} % !
 \defineNoteCommand{theo}{$\circledast$}{\bf}{} % *
 \defineNoteCommand{conc}{$\Rightarrow$}{\bf}{} % =>
-
+\defineNoteCommand{lor}{$\lor$}{\bf} %lor
+\defineNoteCommand{land}{$\land$}{\bf} %land
 \defineNoteCommand{expl}{\glqq\grqq}{\it}{\it} % "
 \defineNoteCommand{smpl}{$\egsymbol$}{\it}{\it} % eg
 

@@ -1,6 +1,9 @@
 export type LmdNode = {
 	type: LmdNodeType
+
+	// for note types, the second item is always the bold one
 	content: string[]
+
 	comments: string[]
 	depth: number
 	parent: LmdNode | undefined

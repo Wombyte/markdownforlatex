@@ -13,7 +13,14 @@
 	"extends": ["plugin:prettier/recommended"],
 	"rules": {
 		"quotes": ["error", "single"],
-		"@typescript-eslint/naming-convention": "warn",
+		"@typescript-eslint/naming-convention": [
+			"warn",
+			{
+				"selector": "variable",
+				"format": ["camelCase", "PascalCase", "UPPER_CASE"],
+				"leadingUnderscore": "allow"
+			}
+		],
 		"@typescript-eslint/semi": ["warn", "never"],
 		"@typescript-eslint/explicit-function-return-type": [
 			"error",

@@ -9,22 +9,6 @@ type LmdTreeTraversalHandler = {
 export default abstract class LmdTreeTraversal {
 	root: LmdNode
 
-	handler: LmdTreeTraversalHandler[] = [
-		{ type: 'root', visit: this.visitRoot, backtrack: this.afterRoot },
-		{
-			type: 'section',
-			visit: this.visitSection,
-			backtrack: this.afterSection,
-		},
-		{
-			type: 'definition',
-			visit: this.visitDefinition,
-			backtrack: this.afterDefinition,
-		},
-		{ type: 'note', visit: this.visitNote, backtrack: this.afterNote },
-		{ type: 'image', visit: this.visitImage, backtrack: this.afterImage },
-	]
-
 	constructor(root: LmdNode) {
 		this.root = root
 	}

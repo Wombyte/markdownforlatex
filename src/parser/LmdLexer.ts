@@ -82,7 +82,7 @@ export default class LmdLexer {
 			if (handler) {
 				handler.lexer(this, line)
 			} else {
-				this.onLatexLine(line)
+				this.onLatexLine(this, line)
 			}
 		})
 
@@ -130,20 +130,39 @@ export default class LmdLexer {
 	onMathLine(lmdLexer: LmdLexer, line: string): void {
 		// console.log(line)
 		const lastIndex = lmdLexer.currentNode.content.length - 1
-		if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
-			lmdLexer.currentNode.content[lastIndex] += line
+		line = LmdLexer.prepareLine(line)
+
+		if (SETTINGS.compactLmdNodeLines) {
+			if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
+				lmdLexer.currentNode.content[lastIndex] += line
+			} else {
+				lmdLexer.currentNode.content.push(line)
+			}
 		} else {
 			lmdLexer.currentNode.content.push(line)
 		}
 	}
 
-	onLatexLine(line: string): void {
-		if (this.currentNode.type in ['image', 'section']) {
-			this.currentNode.content.push(line)
+	onLatexLine(lmdLexer: LmdLexer, line: string): void {
+		line = LmdLexer.prepareLine(line)
+		if (SETTINGS.compactLmdNodeLines) {
+			const type = lmdLexer.currentNode.type
+			if (type === 'image' || type === 'section') {
+				console.log(line)
+				console.log(lmdLexer.currentNode.content)
+				lmdLexer.currentNode.content.push(line)
+				console.log(lmdLexer.currentNode.content)
+			} else {
+				const lastIndex = lmdLexer.currentNode.content.length - 1
+				if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
+					lmdLexer.currentNode.content.push(line)
+				} else {
+					lmdLexer.currentNode.content[lastIndex] +=
+						'\n' + LmdLexer.prepareLine(line)
+				}
+			}
 		} else {
-			const lastIndex = this.currentNode.content.length - 1
-			this.currentNode.content[lastIndex] +=
-				'\n' + LmdLexer.prepareLine(line)
+			lmdLexer.currentNode.content.push(line)
 		}
 	}
 

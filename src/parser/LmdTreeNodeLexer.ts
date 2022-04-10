@@ -27,10 +27,7 @@ export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 	}
 
 	visitSection(node: LmdNode): void {
-		let heading = node.content[0]
-		heading = heading.replace(new RegExp('#+\\s'), '')
-		heading = heading.substring(1)
-		node.content[0] = heading
+		node.content[0] = node.content[0].replace(new RegExp('#+\\s'), '')
 	}
 
 	visitNote(node: LmdNode): void {
@@ -46,13 +43,16 @@ export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 		line = line.substring(start.length)
 		if (line[0] === ' ') {
 			node.content.unshift(line.substring(1))
-			node.content.unshift(start.text)
+			node.content.unshift('')
 		} else {
 			let segments = line.split('  ')
-			segments = segments.reverse()
-			segments.forEach((s) => node.content.unshift(s))
-			node.content.unshift(start.text)
+			if (segments.length <= 0) throw Error('head of node never ends')
+			const head = segments.shift()!
+			const rest = segments.join(' ')
+			node.content.unshift(rest)
+			node.content.unshift(head)
 		}
+		node.content.unshift(start.text)
 	}
 
 	visitDefinition(node: LmdNode): void {
@@ -63,14 +63,20 @@ export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 		let segments = line.split('  ')
 		if (line[0] === ' ') {
 			segments[0] = segments[0].substring(1)
+		} else {
+			segments.unshift('')
 		}
-		segments = segments.reverse()
-		segments.forEach((s) => node.content.unshift(s))
+		node.content.unshift(...segments)
 		node.content.unshift('>')
 	}
 
 	visitImage(node: LmdNode): void {
-		node.content = node.content[0].split(' ')
-		if (node.content.length > 0) node.content.shift()
+		if (node.content.length <= 0) return
+
+		let args = node.content.shift()!.split(' ')
+		if (args.length <= 0) return
+
+		args.shift()
+		node.content.unshift(...args)
 	}
 }
