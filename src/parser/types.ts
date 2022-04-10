@@ -1,18 +1,18 @@
-export type LmdSegment = {
-	type: LmdSegmentType
-	text: {
-		main: string
-		additions: string
-	}
+export type LmdNode = {
+	type: LmdNodeType
+	content: string[]
+	comments: string[]
 	depth: number
-	parent: LmdSegment | undefined
-	children: LmdSegment[]
+	parent: LmdNode | undefined
+	children: LmdNode[]
 }
 
-export type LmdSegmentType = 'root' | 'block' | 'line'
+export type LmdNodeTypeNote = 'note' | 'definition'
+
+export type LmdNodeType = LmdNodeTypeNote | 'root' | 'section' | 'image'
 
 export type LmdLexerResult = {
 	preamble: string
-	root: LmdSegment
+	root: LmdNode
 	commands: string[]
 }

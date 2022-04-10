@@ -10,11 +10,12 @@ export default class LmdParser {
 
 	parse(): string {
 		const lexerResult = this.lexer.lex()
+		console.log(lexerResult.root)
 
 		// execute Makros
 
 		// parse lexer result
-		let text = ''
+		/*let text = ''
 		const stack = [lexerResult.root]
 		while (stack.length > 0) {
 			const node = stack.pop()
@@ -25,9 +26,9 @@ export default class LmdParser {
 				node.text.additions +
 				'\n'
 			stack.push(...node.children.reverse())
-		}
+		}*/
 
-		return lexerResult.preamble + '\n' + text
+		return lexerResult.preamble
 	}
 
 	getSpaces(number: number): string {

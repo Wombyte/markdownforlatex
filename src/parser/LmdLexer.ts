@@ -1,73 +1,94 @@
-import { LmdLexerResult, LmdSegment, LmdSegmentType } from './types'
+import { LmdLexerResult, LmdNode, LmdNodeType, LmdNodeTypeNote } from './types'
 import * as RESOURCES from './RESOURCES.json'
 import * as SETTINGS from './SETTINGS.json'
+import LmdTreeNodeLexer from './LmdTreeNodeLexer'
+
+type LmdLineHandler = {
+	// regex
+	startRegex: RegExp
+
+	// line => content
+	lexer: (lmdLexer: LmdLexer, line: string) => void
+}
 
 export default class LmdLexer {
 	lmdText: string
 	preamble: string
 	commands: string[]
-	root: LmdSegment
+	root: LmdNode
 	lines: string[]
-	currentNode: LmdSegment
+	currentNode: LmdNode
+	currentSectionDepth: number
+	lastIndent: number
 
-	noteLineRegex = new RegExp(RESOURCES.noteIndictor)
-	imageLineRegex = new RegExp(RESOURCES.imageIndicator)
-	commentLineRegex = new RegExp(RESOURCES.commentIndicator)
+	handler: LmdLineHandler[] = [
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.makro),
+			lexer: this.onMakroLine,
+		},
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.section),
+			lexer: this.onSectionLine,
+		},
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.def),
+			lexer: this.onDefintionLine,
+		},
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.note),
+			lexer: this.onNoteLine,
+		},
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.comment),
+			lexer: this.onCommentLine,
+		},
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.image),
+			lexer: this.onImageLine,
+		},
+		{
+			startRegex: new RegExp(RESOURCES.lineStarts.math),
+			lexer: this.onMathLine,
+		},
+	]
 
 	constructor(lmdText: string) {
 		this.lmdText = lmdText
 
-		const div = lmdText.split('_' + RESOURCES.commands.startdocument)
+		const div = lmdText.split('_' + RESOURCES.makros.startdocument)
 		this.preamble = div[0]
 		this.lines = div[1].split('\r\n')
 
 		this.commands = []
 		this.root = {
 			type: 'root',
-			text: { main: '', additions: '' },
+			content: [''],
+			comments: [],
 			depth: 0,
 			parent: undefined,
 			children: [],
 		}
 		this.currentNode = this.root
+		this.currentSectionDepth = 0
+		this.lastIndent = 0
 	}
 
 	lex(): LmdLexerResult {
-		let currentSectionDepth = 0
-		let lastIndent = 0
+		// create tree
 		this.lines.forEach((line) => {
-			if (this.isCommand(line)) {
-				this.commands.push(line)
-				return
+			if (!LmdLexer.hasNonWhiteSpaceCharacter(line)) return
+			const handler = this.handler.find((h) => h.startRegex.test(line))
+			// console.log(handler)
+			if (handler) {
+				handler.lexer(this, line)
+			} else {
+				this.onLatexLine(line)
 			}
-			if (this.isSection(line)) {
-				const sectionDepth = this.getSectionDepth(line)
-				this.goto(sectionDepth - 1)
-				this.pushChild('block', line)
-				currentSectionDepth = sectionDepth
-				lastIndent = 0
-				return
-			}
-			if (this.isNote(line)) {
-				const indent = this.getIndent(line)
-				if (1 > indent && indent > lastIndent + 1) return
-				const diff = indent - lastIndent
-				this.goto(this.currentNode.depth + diff - 1)
-				this.pushChild('line', line)
-				lastIndent = indent
-				return
-			}
-			if (this.isImage(line)) {
-				this.pushChild('line', line)
-				return
-			}
-			if (this.isComment(line)) {
-				if (!SETTINGS.parseComment) return
-				this.pushChild('line', line)
-				return
-			}
-			this.currentNode.text.additions += '\n' + this.prepareLine(line)
 		})
+
+		// lex nodes
+		const treeNodeLexer = new LmdTreeNodeLexer(this.root)
+		treeNodeLexer.traverse()
 
 		return {
 			preamble: this.preamble,
@@ -76,63 +97,110 @@ export default class LmdLexer {
 		}
 	}
 
-	goto(depth: number): void {
-		if (this.currentNode.depth < depth) return
-		while (this.currentNode.depth > depth) {
-			if (!this.currentNode.parent) return
-			this.currentNode = this.currentNode.parent
+	onMakroLine(lmdLexer: LmdLexer, line: string): void {
+		lmdLexer.commands.push(line)
+	}
+
+	onSectionLine(lmdLexer: LmdLexer, line: string): void {
+		const sectionDepth = LmdLexer.getSectionDepth(line)
+		lmdLexer.goto(lmdLexer, sectionDepth - 1)
+		lmdLexer.pushChild(lmdLexer, 'section', line)
+		lmdLexer.currentSectionDepth = sectionDepth
+		lmdLexer.lastIndent = 0
+	}
+
+	onDefintionLine(lmdLexer: LmdLexer, line: string): void {
+		lmdLexer.addNote(lmdLexer, 'definition', line)
+	}
+
+	onNoteLine(lmdLexer: LmdLexer, line: string): void {
+		lmdLexer.addNote(lmdLexer, 'note', line)
+	}
+
+	onCommentLine(lmdLexer: LmdLexer, line: string): void {
+		// console.log(line)
+		if (!SETTINGS.parseComment) return
+		lmdLexer.currentNode.comments.push(line)
+	}
+
+	onImageLine(lmdLexer: LmdLexer, line: string): void {
+		lmdLexer.pushChild(lmdLexer, 'image', line)
+	}
+
+	onMathLine(lmdLexer: LmdLexer, line: string): void {
+		// console.log(line)
+		const lastIndex = lmdLexer.currentNode.content.length - 1
+		if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
+			lmdLexer.currentNode.content[lastIndex] += line
+		} else {
+			lmdLexer.currentNode.content.push(line)
 		}
 	}
 
-	pushChild(type: LmdSegmentType, text: string): void {
-		const block: LmdSegment = {
+	onLatexLine(line: string): void {
+		if (this.currentNode.type in ['image', 'section']) {
+			this.currentNode.content.push(line)
+		} else {
+			const lastIndex = this.currentNode.content.length - 1
+			this.currentNode.content[lastIndex] +=
+				'\n' + LmdLexer.prepareLine(line)
+		}
+	}
+
+	goto(lmdLexer: LmdLexer, depth: number): void {
+		if (lmdLexer.currentNode.depth < depth) return
+		while (lmdLexer.currentNode.depth > depth) {
+			if (!lmdLexer.currentNode.parent) return
+			lmdLexer.currentNode = lmdLexer.currentNode.parent
+		}
+	}
+
+	pushChild(lmdLexer: LmdLexer, type: LmdNodeType, text: string): void {
+		// console.log(text)
+		const block: LmdNode = {
 			type,
-			text: { main: this.prepareLine(text), additions: '' },
-			depth: this.currentNode.depth + 1,
-			parent: this.currentNode,
+			content: [LmdLexer.prepareLine(text)],
+			comments: [],
+			depth: lmdLexer.currentNode.depth + 1,
+			parent: lmdLexer.currentNode,
 			children: [],
 		}
-		this.currentNode.children.push(block)
-		this.currentNode = block
+		lmdLexer.currentNode.children.push(block)
+		lmdLexer.currentNode = block
 	}
 
-	prepareLine(line: string): string {
+	addNote(lmdLexer: LmdLexer, type: LmdNodeTypeNote, line: string): void {
+		// console.log(this.currentNode, line)
+		const indent = LmdLexer.getIndent(line)
+		if (1 > indent && indent > this.lastIndent + 1) return
+		const diff = indent - this.lastIndent
+		lmdLexer.goto(lmdLexer, this.currentNode.depth + diff - 1)
+		lmdLexer.pushChild(lmdLexer, type, line)
+		lmdLexer.lastIndent = indent
+		return
+	}
+
+	static hasNonWhiteSpaceCharacter(line: string): boolean {
+		return /\S/.test(line)
+	}
+
+	static prepareLine(line: string): string {
 		return line.replace(/\t/g, '')
 	}
 
-	isCommand(line: string): boolean {
-		return line.startsWith(RESOURCES.commandIndicator)
+	static getIndent(line: string): number {
+		return LmdLexer.countSymbolsFromBegin(line, '\t')
 	}
 
-	isNote(line: string): boolean {
-		return this.noteLineRegex.test(line)
-	}
-
-	isSection(line: string): boolean {
-		return line.startsWith(RESOURCES.sectionIndictor)
-	}
-
-	isComment(line: string): boolean {
-		return this.commentLineRegex.test(line)
-	}
-
-	isImage(line: string): boolean {
-		return this.imageLineRegex.test(line)
-	}
-
-	getIndent(line: string): number {
-		return this.countSymbolsFromBegin(line, '\t')
-	}
-
-	getSectionDepth(line: string): number {
-		const hashTags = this.countSymbolsFromBegin(
+	static getSectionDepth(line: string): number {
+		const hashTags = LmdLexer.countSymbolsFromBegin(
 			line,
-			RESOURCES.sectionIndictor
+			RESOURCES.lineStarts.section[1]
 		)
 		return 6 - hashTags
 	}
 
-	countSymbolsFromBegin(line: string, symbol: string): number {
+	static countSymbolsFromBegin(line: string, symbol: string): number {
 		for (let i = 0; i < line.length; i++) {
 			if (line[i] != symbol) return i
 		}
