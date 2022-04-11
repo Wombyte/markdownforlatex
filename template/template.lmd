@@ -12,7 +12,7 @@ _startdocument
 \pagebreak 
 
 % set image source file
-_setpdf "C:\Users\marcu\Desktop\Studium\Sonstiges\Latex\MWarkDown\test\test.pdf"
+_setpdf "C:\Users\marcu\Desktop\Programme\VSCodeExtension\markdownforlatex\src\test\preview\test PDF Datei.pdf"
 
 % Headings always start with #
 ##### Chapter
@@ -46,6 +46,9 @@ _setpdf "C:\Users\marcu\Desktop\Studium\Sonstiges\Latex\MWarkDown\test\test.pdf"
 	" Erklärung
 	eg Beispiel
 	=> Schlussfolgerung
+	lor text
+	land text
+	[ text
 
 # Paragraph
 \begin{center}

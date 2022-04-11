@@ -83,10 +83,11 @@
 \defineNoteCommand{nota}{\ding{46}}{\bf}{} % !
 \defineNoteCommand{theo}{$\circledast$}{\bf}{} % *
 \defineNoteCommand{conc}{$\Rightarrow$}{\bf}{} % =>
-\defineNoteCommand{lor}{$\lor$}{\bf}{} %lor
-\defineNoteCommand{land}{$\land$}{\bf}{} %land
+\defineNoteCommand{lornote}{$\lor$}{\bf}{} %lor
+\defineNoteCommand{landnote}{$\land$}{\bf}{} %land
 \defineNoteCommand{expl}{\glqq\grqq}{\it}{\it} % "
 \defineNoteCommand{smpl}{$\egsymbol$}{\it}{\it} % eg
+\defineNoteCommand{blank}{}{}{} % [
 
 \newcommand{\defipre}[1]{#1}
 \newcommand{\defihead}[1]{\textbf{#1}}

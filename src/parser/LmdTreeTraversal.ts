@@ -33,6 +33,7 @@ export default abstract class LmdTreeTraversal {
 				break
 			case 'image':
 				this.visitImage(node)
+				break
 		}
 		node.children.forEach((n) => this.dfs(n))
 		switch (node.type) {
@@ -50,6 +51,7 @@ export default abstract class LmdTreeTraversal {
 				break
 			case 'image':
 				this.afterImage(node)
+				break
 		}
 	}
 

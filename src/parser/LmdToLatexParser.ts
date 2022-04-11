@@ -45,11 +45,11 @@ export default class LmdToLatexParser {
 
 	parse(): string {
 		const lexerResult = this.lexer.lex()
-		console.log(lexerResult.root)
 
 		// execute Makros
 		lexerResult.commands.forEach((command) => {
-			const args = command.split(' ')
+			console.log(command)
+			const args = LmdToLatexParser.getArguments(command)
 			if (args.length <= 0) {
 				vscode.window.showErrorMessage(`makro has no name: ${command}`)
 				return
@@ -61,7 +61,6 @@ export default class LmdToLatexParser {
 				)
 				return
 			}
-			args.shift()
 			makro.handler(this, args)
 		})
 
@@ -77,18 +76,35 @@ export default class LmdToLatexParser {
 	}
 
 	handleSetPdf(parser: LmdToLatexParser, args: string[]): void {
-		const path = LmdToLatexParser.toString(args[0])
+		const path = args[0]
 		parser.imageManager.pdfPath = path
 	}
 
 	handleCreateImage(parser: LmdToLatexParser, args: string[]): void {
-		const name = LmdToLatexParser.toString(args[0])
+		const name = args[0]
 		const page = LmdToLatexParser.toNumber(args[1])
 		parser.imageManager.createImage(name, page, page)
 	}
 
-	static toString(arg: string): string {
-		return arg.substring(1, arg.length - 1)
+	static getArguments(command: string): string[] {
+		const args: string[] = []
+		const segments = command.split(' ')
+
+		for (let i = 1; i < segments.length; i++) {
+			let string = segments[i]
+			if (segments[i].startsWith('"')) {
+				while (!segments[i].endsWith('"')) {
+					string += ' ' + segments[i + 1]
+					i++
+				}
+				string = string.substring(1, string.length - 1)
+			}
+			args.push(string)
+		}
+
+		console.log(command, args)
+
+		return args
 	}
 
 	static toNumber(arg: string): number {
@@ -118,10 +134,11 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		['!', 'nota'],
 		['*', 'theo'],
 		['=>', 'conc'],
-		['lor', 'lor'],
-		['land', 'land'],
+		['lor', 'lornote'],
+		['land', 'landnote'],
 		['"', 'expl'],
 		['eg', 'smpl'],
+		['[', 'blank'],
 	])
 
 	constructor(root: LmdNode) {

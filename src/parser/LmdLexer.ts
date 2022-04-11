@@ -148,10 +148,7 @@ export default class LmdLexer {
 		if (SETTINGS.compactLmdNodeLines) {
 			const type = lmdLexer.currentNode.type
 			if (type === 'image' || type === 'section') {
-				console.log(line)
-				console.log(lmdLexer.currentNode.content)
 				lmdLexer.currentNode.content.push(line)
-				console.log(lmdLexer.currentNode.content)
 			} else {
 				const lastIndex = lmdLexer.currentNode.content.length - 1
 				if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
