@@ -116,11 +116,11 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	result: string
 
 	TEX_SECTION_COMMANDS: string[] = [
-		'chapter',
-		'section',
-		'subsection',
-		'subsubsection',
 		'paragraph',
+		'subsubsection',
+		'subsection',
+		'section',
+		'chapter',
 	]
 
 	TEX_NOTE_COMMANDS: Map<string, string> = new Map([
@@ -138,6 +138,8 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		['[', 'blank'],
 	])
 
+	openText?: string
+
 	constructor(root: LmdNode) {
 		super(root)
 		this.result = ''
@@ -152,60 +154,84 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	}
 
 	visitSection(node: LmdNode): void {
-		this.result += `\\${this.TEX_SECTION_COMMANDS[node.depth - 1]}{${
-			node.content[0]
-		}}\n`
-		this.handleContentRest(node.content, 1)
+		const sectionCommand =
+			this.TEX_SECTION_COMMANDS[node.hierarchyNumber - 1]
+		this.result += `\\${sectionCommand}{${node.content[0]}}\n`
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += '\\begin{notes}' + '\n'
+			this.openText = '\\begin{notes}' + '% ' + node.content[0] + '\n'
 		}
+		this.handleContentRest(node.content, 1, -node.hierarchyNumber)
 	}
 
 	afterSection(node: LmdNode): void {
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += '\\end{notes}' + '\n'
+			this.result += '\\end{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
 	visitDefinition(node: LmdNode): void {
+		if (this.openText) {
+			this.result += this.openText
+			this.openText = undefined
+		}
+
 		const pre = node.content[1]
 		const head = node.content[2]
 		const rest = node.content[3]
+		this.result += LmdTreeTraversalForLatex.getSpaces(-node.hierarchyNumber)
 		if (pre == '') {
 			this.result += `\\defi{${head}}{${rest}}\n`
 		} else {
 			this.result += `\\defi[${pre}]{${head}}{${rest}}\n`
 		}
-		this.handleContentRest(node.content, 4)
+		this.handleContentRest(node.content, 4, -node.hierarchyNumber)
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += '\\begin{notes}' + '\n'
+			this.openText = LmdTreeTraversalForLatex.getSpaces(
+				-node.hierarchyNumber
+			)
+			this.openText += '\\begin{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
 	afterDefinition(node: LmdNode): void {
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += '\\end{notes}' + '\n'
+			this.result += LmdTreeTraversalForLatex.getSpaces(
+				-node.hierarchyNumber
+			)
+			this.result += '\\end{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
 	visitNote(node: LmdNode): void {
+		if (this.openText) {
+			this.result += this.openText
+			this.openText = undefined
+		}
+
 		const command = this.TEX_NOTE_COMMANDS.get(node.content[0])
 		const head = node.content[1]
 		const rest = node.content[2]
+		this.result += LmdTreeTraversalForLatex.getSpaces(-node.hierarchyNumber)
 		if (head == '') {
 			this.result += `\\${command}{${rest}}\n`
 		} else {
 			this.result += `\\${command}[${head}]{${rest}}\n`
 		}
-		this.handleContentRest(node.content, 3)
+		this.handleContentRest(node.content, 3, -node.hierarchyNumber)
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += '\\begin{notes}' + '\n'
+			this.openText = LmdTreeTraversalForLatex.getSpaces(
+				-node.hierarchyNumber
+			)
+			this.openText += '\\begin{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
 	afterNote(node: LmdNode): void {
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += '\\end{notes}' + '\n'
+			this.result += LmdTreeTraversalForLatex.getSpaces(
+				-node.hierarchyNumber
+			)
+			this.result += '\\end{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
@@ -213,16 +239,21 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		const name = node.content[0]
 		const size = node.content[1]
 		this.result += `\\pic{${name}}{${size}}\n`
-		this.handleContentRest(node.content, 2)
+		this.handleContentRest(node.content, 2, -node.hierarchyNumber)
 	}
 
-	handleContentRest(content: string[], startIndex: number): void {
+	handleContentRest(
+		content: string[],
+		startIndex: number,
+		indent: number
+	): void {
 		for (let i = startIndex; i < content.length; i++) {
 			let text = content[i]
 			if (text[0] == '$') {
 				let math = content[i].replace('\\$\\$\\$\\$', '\\\\')
 				math = math.substring(2, math.length - 2)
 			}
+			this.result += LmdTreeTraversalForLatex.getSpaces(indent)
 			this.result += text + '\n'
 		}
 	}
@@ -232,5 +263,13 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		return node.children.some(
 			(n) => n.type === 'note' || n.type === 'definition'
 		)
+	}
+
+	static getSpaces(n: number): string {
+		let s = ''
+		for (let i = 0; i < n; i++) {
+			s += '\t'
+		}
+		return s
 	}
 }

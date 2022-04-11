@@ -18,7 +18,6 @@ export default class LmdLexer {
 	root: LmdNode
 	lines: string[]
 	currentNode: LmdNode
-	currentSectionDepth: number
 	lastIndent: number
 
 	handler: LmdLineHandler[] = [
@@ -64,12 +63,11 @@ export default class LmdLexer {
 			type: 'root',
 			content: [''],
 			comments: [],
-			depth: 0,
+			hierarchyNumber: 6,
 			parent: undefined,
 			children: [],
 		}
 		this.currentNode = this.root
-		this.currentSectionDepth = 0
 		this.lastIndent = 0
 	}
 
@@ -102,10 +100,7 @@ export default class LmdLexer {
 	}
 
 	onSectionLine(lmdLexer: LmdLexer, line: string): void {
-		const sectionDepth = LmdLexer.getSectionDepth(line)
-		lmdLexer.goto(lmdLexer, sectionDepth - 1)
 		lmdLexer.pushChild(lmdLexer, 'section', line)
-		lmdLexer.currentSectionDepth = sectionDepth
 		lmdLexer.lastIndent = 0
 	}
 
@@ -132,7 +127,7 @@ export default class LmdLexer {
 		const lastIndex = lmdLexer.currentNode.content.length - 1
 		line = LmdLexer.prepareLine(line)
 
-		if (SETTINGS.compactLmdNodeLines) {
+		if (SETTINGS.compactLmdNoteLines) {
 			if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
 				lmdLexer.currentNode.content[lastIndex] += line
 			} else {
@@ -145,7 +140,7 @@ export default class LmdLexer {
 
 	onLatexLine(lmdLexer: LmdLexer, line: string): void {
 		line = LmdLexer.prepareLine(line)
-		if (SETTINGS.compactLmdNodeLines) {
+		if (SETTINGS.compactLmdNoteLines) {
 			const type = lmdLexer.currentNode.type
 			if (type === 'image' || type === 'section') {
 				lmdLexer.currentNode.content.push(line)
@@ -164,8 +159,8 @@ export default class LmdLexer {
 	}
 
 	goto(lmdLexer: LmdLexer, depth: number): void {
-		if (lmdLexer.currentNode.depth < depth) return
-		while (lmdLexer.currentNode.depth > depth) {
+		if (lmdLexer.currentNode.hierarchyNumber < depth) return
+		while (lmdLexer.currentNode.hierarchyNumber > depth) {
 			if (!lmdLexer.currentNode.parent) return
 			lmdLexer.currentNode = lmdLexer.currentNode.parent
 		}
@@ -173,11 +168,13 @@ export default class LmdLexer {
 
 	pushChild(lmdLexer: LmdLexer, type: LmdNodeType, text: string): void {
 		// console.log(text)
+		const hn = LmdLexer.getHierarchyNumber(type, text)
+		lmdLexer.gotoNextParent(lmdLexer, hn)
 		const block: LmdNode = {
 			type,
 			content: [LmdLexer.prepareLine(text)],
 			comments: [],
-			depth: lmdLexer.currentNode.depth + 1,
+			hierarchyNumber: hn,
 			parent: lmdLexer.currentNode,
 			children: [],
 		}
@@ -188,12 +185,11 @@ export default class LmdLexer {
 	addNote(lmdLexer: LmdLexer, type: LmdNodeTypeNote, line: string): void {
 		// console.log(this.currentNode, line)
 		const indent = LmdLexer.getIndent(line)
-		if (1 > indent && indent > this.lastIndent + 1) return
-		const diff = indent - this.lastIndent
-		lmdLexer.goto(lmdLexer, this.currentNode.depth + diff - 1)
+		if (1 > indent && indent > this.lastIndent + 1) {
+			throw Error(`Invalid indent in line: ${line}`)
+		}
 		lmdLexer.pushChild(lmdLexer, type, line)
 		lmdLexer.lastIndent = indent
-		return
 	}
 
 	static hasNonWhiteSpaceCharacter(line: string): boolean {
@@ -202,10 +198,6 @@ export default class LmdLexer {
 
 	static prepareLine(line: string): string {
 		return line.replace(/\t/g, '')
-	}
-
-	static getIndent(line: string): number {
-		return LmdLexer.countSymbolsFromBegin(line, '\t')
 	}
 
 	static getSectionDepth(line: string): number {
@@ -221,5 +213,26 @@ export default class LmdLexer {
 			if (line[i] != symbol) return i
 		}
 		return 0
+	}
+
+	static getIndent(line: string): number {
+		return LmdLexer.countSymbolsFromBegin(line, '\t')
+	}
+
+	static getHierarchyNumber(type: LmdNodeType, line: string): number {
+		if (type == 'section') {
+			return LmdLexer.countSymbolsFromBegin(line, '#')
+		}
+		if (type == 'image') {
+			return -4
+		}
+		return -LmdLexer.getIndent(line)
+	}
+
+	gotoNextParent(lmdLexer: LmdLexer, hn: number): void {
+		while (lmdLexer.currentNode.hierarchyNumber <= hn) {
+			if (!lmdLexer.currentNode.parent) return
+			lmdLexer.currentNode = lmdLexer.currentNode.parent
+		}
 	}
 }

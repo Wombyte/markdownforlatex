@@ -1,4 +1,4 @@
 {
 	"parseComment": false,
-	"compactLmdNodeLines": true
+	"compactLmdNoteLines": false
 }

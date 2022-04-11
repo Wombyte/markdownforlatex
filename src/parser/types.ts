@@ -5,7 +5,7 @@ export type LmdNode = {
 	content: string[]
 
 	comments: string[]
-	depth: number
+	hierarchyNumber: number
 	parent: LmdNode | undefined
 	children: LmdNode[]
 }
