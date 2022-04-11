@@ -2,12 +2,45 @@ import * as vscode from 'vscode'
 import LmdLexer from './LmdLexer'
 import LmdTreeTraversal from './LmdTreeTraversal'
 import { LmdNode } from './types'
+import * as RESOURCES from './RESOURCES.json'
+import ImageManager from './ImageManager'
 
-export default class LmdParser {
-	private lexer
+type MakroHandler = {
+	name: string
+	args: string[]
+	handler: (parser: LmdToLatexParser, args: string[]) => void
 
-	constructor(srcFile: vscode.TextDocument) {
+	// created
+	regex?: RegExp
+}
+
+export default class LmdToLatexParser {
+	private lexer: LmdLexer
+	private imageManager: ImageManager
+
+	private MAKRO_HANDLER: MakroHandler[] = [
+		{
+			name: RESOURCES.makros.setpdf.name,
+			args: RESOURCES.makros.setpdf.args,
+			handler: this.handleSetPdf,
+		},
+		{
+			name: RESOURCES.makros.crimg.name,
+			args: RESOURCES.makros.crimg.args,
+			handler: this.handleCreateImage,
+		},
+	]
+
+	constructor(srcFile: vscode.TextDocument, imgDir: string) {
 		this.lexer = new LmdLexer(srcFile.getText())
+		this.MAKRO_HANDLER.forEach((handler) => {
+			const argRegex = handler.args
+				// @ts-ignore: RESOURCES.makroArgRegex has to have arg as key!
+				.map((arg) => RESOURCES.makroArgRegex[arg])
+				.join(' ')
+			handler.regex = new RegExp('_' + handler.name + ' ' + argRegex)
+		})
+		this.imageManager = new ImageManager(imgDir)
 	}
 
 	parse(): string {
@@ -15,26 +48,51 @@ export default class LmdParser {
 		console.log(lexerResult.root)
 
 		// execute Makros
+		lexerResult.commands.forEach((command) => {
+			const args = command.split(' ')
+			if (args.length <= 0) {
+				vscode.window.showErrorMessage(`makro has no name: ${command}`)
+				return
+			}
+			const makro = this.MAKRO_HANDLER.find((h) => h.regex?.test(command))
+			if (!makro) {
+				vscode.window.showErrorMessage(
+					`no such makro found: ${command}`
+				)
+				return
+			}
+			args.shift()
+			makro.handler(this, args)
+		})
 
 		// parse lexer result
 		const trav = new LmdTreeTraversalForLatex(lexerResult.root)
 		trav.traverse()
-		/*let text = ''
-		const stack = [lexerResult.root]
-		while (stack.length > 0) {
-			const node = stack.pop()
-			if (!node) continue
-			text +=
-				this.getSpaces(node.depth) +
-				node.text.main +
-				node.text.additions +
-				'\n'
-			stack.push(...node.children.reverse())
-		}*/
 
 		return (
-			'\\documentclass{lmdscript}\n' + lexerResult.preamble + trav.result
+			'\\documentclass{build/lmdscript}\n' +
+			lexerResult.preamble +
+			trav.result
 		)
+	}
+
+	handleSetPdf(parser: LmdToLatexParser, args: string[]): void {
+		const path = LmdToLatexParser.toString(args[0])
+		parser.imageManager.pdfPath = path
+	}
+
+	handleCreateImage(parser: LmdToLatexParser, args: string[]): void {
+		const name = LmdToLatexParser.toString(args[0])
+		const page = LmdToLatexParser.toNumber(args[1])
+		parser.imageManager.createImage(name, page, page)
+	}
+
+	static toString(arg: string): string {
+		return arg.substring(1, arg.length - 1)
+	}
+
+	static toNumber(arg: string): number {
+		return +arg
 	}
 }
 

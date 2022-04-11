@@ -83,8 +83,8 @@
 \defineNoteCommand{nota}{\ding{46}}{\bf}{} % !
 \defineNoteCommand{theo}{$\circledast$}{\bf}{} % *
 \defineNoteCommand{conc}{$\Rightarrow$}{\bf}{} % =>
-\defineNoteCommand{lor}{$\lor$}{\bf} %lor
-\defineNoteCommand{land}{$\land$}{\bf} %land
+\defineNoteCommand{lor}{$\lor$}{\bf}{} %lor
+\defineNoteCommand{land}{$\land$}{\bf}{} %land
 \defineNoteCommand{expl}{\glqq\grqq}{\it}{\it} % "
 \defineNoteCommand{smpl}{$\egsymbol$}{\it}{\it} % eg
 

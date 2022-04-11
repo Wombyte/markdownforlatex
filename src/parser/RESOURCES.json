@@ -1,6 +1,18 @@
 {
 	"makros": {
-		"startdocument": "startdocument"
+		"startdocument": "startdocument",
+		"setpdf": {
+			"name": "setpdf",
+			"args": ["string"]
+		},
+		"crimg": {
+			"name": "crimg",
+			"args": ["string", "int"]
+		}
+	},
+	"makroArgRegex": {
+		"string": "\".+\"",
+		"int": "(0|[1-9]\\d*)"
 	},
 	"noteStarts": [
 		",",

@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import initLmdDirectory from './commands/initLmdDirectory'
 import renderImages from './commands/renderImages'
 import * as path from 'path'
-import LmdParser from './parser/LmdToLatexParser'
+import LmdToLatexParser from './parser/LmdToLatexParser'
 import { writeFile } from 'fs'
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -65,6 +65,11 @@ function getLatexFilePath(lmdFile: vscode.TextDocument): string {
 	return path.join(dirName, fileNameWithoutExtension + '.tex')
 }
 
+function getImageDirPath(lmdFile: vscode.TextDocument): string {
+	const dirName = path.dirname(lmdFile.fileName)
+	return path.join(dirName, 'images')
+}
+
 function initLmdDirectoryFunc(context: vscode.ExtensionContext): void {
 	const templateDirPath = path.join(context.extensionUri.fsPath, 'template')
 	initLmdDirectory(templateDirPath)
@@ -74,8 +79,9 @@ function parseToLatexFunc(context: vscode.ExtensionContext): void {
 	const lmdFile = getOpenLmdFile()
 	if (!lmdFile) return
 	const latexFilePath = getLatexFilePath(lmdFile)
+	const imageDirPath = getImageDirPath(lmdFile)
 
-	const parser = new LmdParser(lmdFile)
+	const parser = new LmdToLatexParser(lmdFile, imageDirPath)
 	const result = parser.parse()
 
 	writeFile(latexFilePath, result, function (err) {
