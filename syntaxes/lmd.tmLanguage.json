@@ -52,7 +52,7 @@
 			]
 		},
 		"defaultnote": {
-			"begin": "(,|\\.|=>|\\[\\S*\\])",
+			"begin": "(,|\\.|=>|&|\\||\\[)",
 			"beginCaptures": {
 				"0": { "name": "mld.note.default" }
 			},
@@ -176,7 +176,6 @@
 		},
 		"imageline": {
 			"name": "keyword.image",
-			"begin": "img",
 			"match": "img\\s(\\S)*\\s0\\.[0-9]+"
 		},
 		"latexcontent": {

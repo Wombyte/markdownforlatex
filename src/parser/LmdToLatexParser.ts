@@ -48,7 +48,6 @@ export default class LmdToLatexParser {
 
 		// execute Makros
 		lexerResult.commands.forEach((command) => {
-			console.log(command)
 			const args = LmdToLatexParser.getArguments(command)
 			if (args.length <= 0) {
 				vscode.window.showErrorMessage(`makro has no name: ${command}`)
@@ -102,8 +101,6 @@ export default class LmdToLatexParser {
 			args.push(string)
 		}
 
-		console.log(command, args)
-
 		return args
 	}
 
@@ -134,8 +131,8 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		['!', 'nota'],
 		['*', 'theo'],
 		['=>', 'conc'],
-		['lor', 'lornote'],
-		['land', 'landnote'],
+		['|', 'lornote'],
+		['&', 'landnote'],
 		['"', 'expl'],
 		['eg', 'smpl'],
 		['[', 'blank'],
