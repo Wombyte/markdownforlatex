@@ -1,33 +1,32 @@
-import * as vscode from 'vscode'
+import { window, ExtensionContext, TextDocument, commands, Uri } from 'vscode'
 import initLmdDirectory from './commands/initLmdDirectory'
-import renderImages from './commands/renderImages'
 import * as path from 'path'
 import LmdToLatexParser from './parser/LmdToLatexParser'
 import { writeFile } from 'fs'
+import runLatex from './commands/runLatex'
+import { LmdLexer } from './parser/LmdLexer'
 
-export function activate(context: vscode.ExtensionContext): void {
+export function activate(context: ExtensionContext): void {
 	// Markdown For Latex: Init LMD-Directory
-	let initDir = vscode.commands.registerCommand(
-		'markdownforlatex.initLmdDir',
-		() => initLmdDirectoryFunc(context)
+	let initDir = commands.registerCommand('markdownforlatex.initLmdDir', () =>
+		initLmdDirectoryFunc(context)
 	)
 
 	// Markdown For Latex: Parse to Latex
-	let parseToLatex = vscode.commands.registerCommand(
+	let parseToLatex = commands.registerCommand(
 		'markdownforlatex.parseToLatex',
 		() => parseToLatexFunc(context)
 	)
 
 	// Markdown For Latex: Render Images
-	let renderImages = vscode.commands.registerCommand(
+	let renderImages = commands.registerCommand(
 		'markdownforlatex.renderImages',
 		() => renderImagesFunc(context)
 	)
 
 	// Markdown For Latex: Create PDF
-	let createPdf = vscode.commands.registerCommand(
-		'markdownforlatex.createPdf',
-		() => createPdfFunc(context)
+	let createPdf = commands.registerCommand('markdownforlatex.createPdf', () =>
+		createPdfFunc(context)
 	)
 
 	context.subscriptions.push(initDir)
@@ -41,21 +40,21 @@ export function deactivate(): void {}
 /**
  * @returns the document of the active text editor if it is an .lmd-file, or undefined if not
  */
-function getOpenLmdFile(): vscode.TextDocument | undefined {
-	const editor = vscode.window.activeTextEditor
+function getOpenLmdFile(): TextDocument | undefined {
+	const editor = window.activeTextEditor
 	if (editor == null || editor.document == null) {
-		vscode.window.showErrorMessage('No file open')
+		window.showErrorMessage('No file open')
 		return undefined
 	}
 	const doc = editor.document
 	if (doc.languageId !== 'lmd') {
-		vscode.window.showErrorMessage('Open File is not an lmd-File')
+		window.showErrorMessage('Open File is not an lmd-File')
 		return undefined
 	}
 	return doc
 }
 
-function getLatexFilePath(lmdFile: vscode.TextDocument): string {
+function getLatexFilePath(lmdFile: TextDocument): string {
 	const fileName = path.basename(lmdFile.fileName)
 	const fileNameWithoutExtension = fileName.substring(
 		0,
@@ -65,19 +64,22 @@ function getLatexFilePath(lmdFile: vscode.TextDocument): string {
 	return path.join(dirName, fileNameWithoutExtension + '.tex')
 }
 
-function getImageDirPath(lmdFile: vscode.TextDocument): string {
+function getImageDirPath(lmdFile: TextDocument): string {
 	const dirName = path.dirname(lmdFile.fileName)
 	return path.join(dirName, 'images')
 }
 
-function initLmdDirectoryFunc(context: vscode.ExtensionContext): void {
+function initLmdDirectoryFunc(context: ExtensionContext): void {
 	const templateDirPath = path.join(context.extensionUri.fsPath, 'template')
 	initLmdDirectory(templateDirPath)
 }
 
-function parseToLatexFunc(context: vscode.ExtensionContext): void {
+function parseToLatexFunc(context: ExtensionContext): void {
 	const lmdFile = getOpenLmdFile()
-	if (!lmdFile) return
+	if (!lmdFile) {
+		window.showErrorMessage('No .lmd-File')
+		return
+	}
 	const latexFilePath = getLatexFilePath(lmdFile)
 	const imageDirPath = getImageDirPath(lmdFile)
 
@@ -86,16 +88,29 @@ function parseToLatexFunc(context: vscode.ExtensionContext): void {
 
 	writeFile(latexFilePath, result, function (err) {
 		if (err) throw err
-		vscode.window.showInformationMessage('Latex File created')
+		window.showInformationMessage('Latex File created')
 	})
 }
 
-function renderImagesFunc(context: vscode.ExtensionContext): void {
-	const lmdfile = getOpenLmdFile()
-	if (!lmdfile) return
-	renderImages(lmdfile)
+function renderImagesFunc(context: ExtensionContext): void {
+	const lmdFile = getOpenLmdFile()
+	if (!lmdFile) {
+		window.showErrorMessage('No .lmd-File')
+		return
+	}
+	const imageDirPath = getImageDirPath(lmdFile)
+	const lexer = new LmdLexer(lmdFile.getText(), { onlyMakros: true })
+	const lexerResult = lexer.lex()
+	const parser = new LmdToLatexParser(lmdFile, imageDirPath)
+	parser.executeMakros(lexerResult.commands)
 }
 
-function createPdfFunc(context: vscode.ExtensionContext): void {
-	vscode.window.showInformationMessage('Create PDF')
+function createPdfFunc(context: ExtensionContext): void {
+	const lmdFile = getOpenLmdFile()
+	if (!lmdFile) {
+		window.showErrorMessage('No .lmd-File')
+		return
+	}
+	const texFilePath = getLatexFilePath(lmdFile)
+	runLatex(texFilePath)
 }

@@ -11,7 +11,11 @@ type LmdLineHandler = {
 	lexer: (lmdLexer: LmdLexer, line: string) => void
 }
 
-export default class LmdLexer {
+export type LmdLexerOptions = {
+	onlyMakros: boolean
+}
+
+export class LmdLexer {
 	lmdText: string
 	preamble: string
 	commands: string[]
@@ -19,6 +23,11 @@ export default class LmdLexer {
 	lines: string[]
 	currentNode: LmdNode
 	lastIndent: number
+
+	options: LmdLexerOptions
+	readonly standardOptions: LmdLexerOptions = {
+		onlyMakros: false,
+	}
 
 	handler: LmdLineHandler[] = [
 		{
@@ -51,7 +60,8 @@ export default class LmdLexer {
 		},
 	]
 
-	constructor(lmdText: string) {
+	constructor(lmdText: string, options?: LmdLexerOptions) {
+		this.options = { ...this.standardOptions, ...options }
 		this.lmdText = lmdText
 
 		const div = lmdText.split('_' + RESOURCES.makros.startdocument)
@@ -72,6 +82,9 @@ export default class LmdLexer {
 	}
 
 	lex(): LmdLexerResult {
+		const handlerSelection = this.options.onlyMakros
+			? [this.handler[0]]
+			: this.handler
 		// create tree
 		this.lines.forEach((line) => {
 			if (!LmdLexer.hasNonWhiteSpaceCharacter(line)) return

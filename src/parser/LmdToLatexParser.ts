@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import LmdLexer from './LmdLexer'
+import { LmdLexer } from './LmdLexer'
 import LmdTreeTraversal from './LmdTreeTraversal'
 import { LmdNode } from './types'
 import * as RESOURCES from './RESOURCES.json'
@@ -47,21 +47,7 @@ export default class LmdToLatexParser {
 		const lexerResult = this.lexer.lex()
 
 		// execute Makros
-		lexerResult.commands.forEach((command) => {
-			const args = LmdToLatexParser.getArguments(command)
-			if (args.length <= 0) {
-				vscode.window.showErrorMessage(`makro has no name: ${command}`)
-				return
-			}
-			const makro = this.MAKRO_HANDLER.find((h) => h.regex?.test(command))
-			if (!makro) {
-				vscode.window.showErrorMessage(
-					`no such makro found: ${command}`
-				)
-				return
-			}
-			makro.handler(this, args)
-		})
+		this.executeMakros(lexerResult.commands)
 
 		// parse lexer result
 		const trav = new LmdTreeTraversalForLatex(lexerResult.root)
@@ -72,6 +58,22 @@ export default class LmdToLatexParser {
 			lexerResult.preamble +
 			trav.result
 		)
+	}
+
+	executeMakros(makros: string[]): void {
+		makros.forEach((makro) => {
+			const args = LmdToLatexParser.getArguments(makro)
+			if (args.length <= 0) {
+				vscode.window.showErrorMessage(`makro has no name: ${makro}`)
+				return
+			}
+			const handler = this.MAKRO_HANDLER.find((h) => h.regex?.test(makro))
+			if (!handler) {
+				vscode.window.showErrorMessage(`no such makro found: ${makro}`)
+				return
+			}
+			handler.handler(this, args)
+		})
 	}
 
 	handleSetPdf(parser: LmdToLatexParser, args: string[]): void {

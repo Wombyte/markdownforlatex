@@ -93,6 +93,7 @@
 		"@types/fs-extra": "^9.0.13",
 		"fs-extra": "^10.0.0",
 		"fse": "^4.0.1",
-		"node-poppler": "^5.1.2"
+		"node-poppler": "^5.1.2",
+		"ts-child-process": "^0.0.6"
 	}
 }
