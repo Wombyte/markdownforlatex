@@ -6,6 +6,10 @@ This is a VsCode-Extension for my markdown-ish syntax that creates PDF-Files via
 
 ## Requirements
 
+The following requirements have to be fulfilled:
+
+-   the command `pdflatex.exe -synctex=1 -interaction=nonstopmode ${fileName} -aux-directory=build` has to work
+
 Yet no further dependencies have to be installed.
 
 <br>

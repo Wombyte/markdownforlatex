@@ -1,38 +1,28 @@
 import { window, ExtensionContext, TextDocument, commands, Uri } from 'vscode'
-import initLmdDirectory from './commands/initLmdDirectory'
 import * as path from 'path'
-import LmdToLatexParser from './parser/LmdToLatexParser'
-import { writeFile } from 'fs'
-import runLatex from './commands/runLatex'
-import { LmdLexer } from './parser/LmdLexer'
+import LmdToLatexParser from './latex/LmdToLatexParser'
+import { writeFile, writeFileSync } from 'fs'
+import runLatex from './latex/runLatex'
+import LmdLexer from './lmd/LmdLexer'
+import initLmdDirectory, { getImageDirPath, getLatexFilePath } from './LmdDirectoryManager'
+
+let extensionContext: ExtensionContext | undefined = undefined
 
 export function activate(context: ExtensionContext): void {
+	extensionContext = context
 	// Markdown For Latex: Init LMD-Directory
-	let initDir = commands.registerCommand('markdownforlatex.initLmdDir', () =>
-		initLmdDirectoryFunc(context)
-	)
+	let initDir = commands.registerCommand('markdownforlatex.initLmdDir', initLmdDirectoryFunc)
 
 	// Markdown For Latex: Parse to Latex
-	let parseToLatex = commands.registerCommand(
-		'markdownforlatex.parseToLatex',
-		() => parseToLatexFunc(context)
-	)
+	let parseToLatex = commands.registerCommand('markdownforlatex.parseToLatex', parseToLatexFunc)
 
 	// Markdown For Latex: Render Images
-	let renderImages = commands.registerCommand(
-		'markdownforlatex.renderImages',
-		() => renderImagesFunc(context)
-	)
+	let renderImages = commands.registerCommand('markdownforlatex.renderImages', renderImagesFunc)
 
 	// Markdown For Latex: Create PDF
-	let createPdf = commands.registerCommand('markdownforlatex.createPdf', () =>
-		createPdfFunc(context)
-	)
+	let createPdf = commands.registerCommand('markdownforlatex.createPdf', createPdfFunc)
 
-	context.subscriptions.push(initDir)
-	context.subscriptions.push(parseToLatex)
-	context.subscriptions.push(renderImages)
-	context.subscriptions.push(createPdf)
+	extensionContext.subscriptions.push(initDir, parseToLatex, renderImages, createPdf)
 }
 
 export function deactivate(): void {}
@@ -54,27 +44,23 @@ function getOpenLmdFile(): TextDocument | undefined {
 	return doc
 }
 
-function getLatexFilePath(lmdFile: TextDocument): string {
-	const fileName = path.basename(lmdFile.fileName)
-	const fileNameWithoutExtension = fileName.substring(
-		0,
-		fileName.indexOf('.')
-	)
-	const dirName = path.dirname(lmdFile.fileName)
-	return path.join(dirName, fileNameWithoutExtension + '.tex')
+function initLmdDirectoryFunc(): void {
+	if (!extensionContext) {
+		window.showErrorMessage('Extension is not active')
+		return
+	}
+	const templateDirPath = path.join(extensionContext.extensionUri.fsPath, 'template')
+	const lmdFilePathThenable = initLmdDirectory(templateDirPath)
+	if (!lmdFilePathThenable) {
+		window.showErrorMessage('Creation not successful')
+	}
+	lmdFilePathThenable!.then((lmdFilePath) => {
+		const doc = Uri.file(lmdFilePath)
+		window.showTextDocument(doc)
+	})
 }
 
-function getImageDirPath(lmdFile: TextDocument): string {
-	const dirName = path.dirname(lmdFile.fileName)
-	return path.join(dirName, 'images')
-}
-
-function initLmdDirectoryFunc(context: ExtensionContext): void {
-	const templateDirPath = path.join(context.extensionUri.fsPath, 'template')
-	initLmdDirectory(templateDirPath)
-}
-
-function parseToLatexFunc(context: ExtensionContext): void {
+function parseToLatexFunc(): void {
 	const lmdFile = getOpenLmdFile()
 	if (!lmdFile) {
 		window.showErrorMessage('No .lmd-File')
@@ -86,13 +72,11 @@ function parseToLatexFunc(context: ExtensionContext): void {
 	const parser = new LmdToLatexParser(lmdFile, imageDirPath)
 	const result = parser.parse()
 
-	writeFile(latexFilePath, result, function (err) {
-		if (err) throw err
-		window.showInformationMessage('Latex File created')
-	})
+	writeFileSync(latexFilePath, result)
+	window.showInformationMessage('Latex File created')
 }
 
-function renderImagesFunc(context: ExtensionContext): void {
+function renderImagesFunc(): void {
 	const lmdFile = getOpenLmdFile()
 	if (!lmdFile) {
 		window.showErrorMessage('No .lmd-File')
@@ -103,14 +87,19 @@ function renderImagesFunc(context: ExtensionContext): void {
 	const lexerResult = lexer.lex()
 	const parser = new LmdToLatexParser(lmdFile, imageDirPath)
 	parser.executeMakros(lexerResult.commands)
+
+	window.showInformationMessage('Images rendered')
 }
 
-function createPdfFunc(context: ExtensionContext): void {
+function createPdfFunc(): void {
 	const lmdFile = getOpenLmdFile()
 	if (!lmdFile) {
 		window.showErrorMessage('No .lmd-File')
 		return
 	}
+	parseToLatexFunc()
 	const texFilePath = getLatexFilePath(lmdFile)
-	runLatex(texFilePath)
+	runLatex(texFilePath, () => {
+		window.showInformationMessage('PDF created')
+	})
 }

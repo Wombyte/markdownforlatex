@@ -38,10 +38,8 @@ export default class ImageManager {
 			scalePageTo: 3000,
 		}
 
-		this.poppler
-			.pdfToCairo(this.currentPdfPath, dst, options)
-			.catch((e) => {
-				window.showErrorMessage(`${dst} could not be generated`)
-			})
+		this.poppler.pdfToCairo(this.currentPdfPath, dst, options).catch((e) => {
+			window.showErrorMessage(`${dst} could not be generated`)
+		})
 	}
 }

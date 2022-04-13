@@ -2,7 +2,7 @@ import * as path from 'path'
 import { exec } from 'child_process'
 import { window, workspace, Uri } from 'vscode'
 
-export default function runLatex(texFilePath: string): void {
+export default function runLatex(texFilePath: string, onSuccess: () => void): void {
 	const fileName = path.basename(texFilePath)
 	const dirName = path.dirname(texFilePath)
 	exec(
@@ -16,11 +16,7 @@ export default function runLatex(texFilePath: string): void {
 				window.showErrorMessage(stderr)
 				return
 			}
-
-			const pdfFileName = fileName.replace('.tex', '.pdf')
-			window.showTextDocument(
-				Uri.joinPath(Uri.file(dirName), pdfFileName)
-			)
+			onSuccess()
 		}
 	)
 }

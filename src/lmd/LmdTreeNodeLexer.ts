@@ -1,6 +1,6 @@
-import LmdTreeTraversal from './LmdTreeTraversal'
-import { LmdNode, LmdNodeTypeNote } from './types'
-import * as RESOURCES from './RESOURCES.json'
+import LmdTreeTraversal from '../LmdTreeTraversal'
+import { LmdNode } from '../types'
+import * as RESOURCES from '../RESOURCES.json'
 
 type NoteHandler = {
 	regex: RegExp

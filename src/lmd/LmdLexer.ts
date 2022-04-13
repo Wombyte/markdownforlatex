@@ -1,6 +1,6 @@
-import { LmdLexerResult, LmdNode, LmdNodeType, LmdNodeTypeNote } from './types'
-import * as RESOURCES from './RESOURCES.json'
-import * as SETTINGS from './SETTINGS.json'
+import { LmdLexerOptions, LmdLexerResult, LmdNode, LmdNodeType, LmdNodeTypeNote } from '../types'
+import * as RESOURCES from '../RESOURCES.json'
+import * as SETTINGS from '../SETTINGS.json'
 import LmdTreeNodeLexer from './LmdTreeNodeLexer'
 
 type LmdLineHandler = {
@@ -11,11 +11,7 @@ type LmdLineHandler = {
 	lexer: (lmdLexer: LmdLexer, line: string) => void
 }
 
-export type LmdLexerOptions = {
-	onlyMakros: boolean
-}
-
-export class LmdLexer {
+export default class LmdLexer {
 	lmdText: string
 	preamble: string
 	commands: string[]
@@ -25,8 +21,10 @@ export class LmdLexer {
 	lastIndent: number
 
 	options: LmdLexerOptions
+
 	readonly standardOptions: LmdLexerOptions = {
 		onlyMakros: false,
+		readComments: false,
 	}
 
 	handler: LmdLineHandler[] = [
@@ -60,7 +58,7 @@ export class LmdLexer {
 		},
 	]
 
-	constructor(lmdText: string, options?: LmdLexerOptions) {
+	constructor(lmdText: string, options?: Partial<LmdLexerOptions>) {
 		this.options = { ...this.standardOptions, ...options }
 		this.lmdText = lmdText
 
@@ -82,13 +80,11 @@ export class LmdLexer {
 	}
 
 	lex(): LmdLexerResult {
-		const handlerSelection = this.options.onlyMakros
-			? [this.handler[0]]
-			: this.handler
+		const handlerSelection = this.options.onlyMakros ? [this.handler[0]] : this.handler
 		// create tree
 		this.lines.forEach((line) => {
 			if (!LmdLexer.hasNonWhiteSpaceCharacter(line)) return
-			const handler = this.handler.find((h) => h.startRegex.test(line))
+			const handler = handlerSelection.find((h) => h.startRegex.test(line))
 			// console.log(handler)
 			if (handler) {
 				handler.lexer(this, line)
@@ -162,8 +158,7 @@ export class LmdLexer {
 				if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
 					lmdLexer.currentNode.content.push(line)
 				} else {
-					lmdLexer.currentNode.content[lastIndex] +=
-						'\n' + LmdLexer.prepareLine(line)
+					lmdLexer.currentNode.content[lastIndex] += '\n' + LmdLexer.prepareLine(line)
 				}
 			}
 		} else {
@@ -214,10 +209,7 @@ export class LmdLexer {
 	}
 
 	static getSectionDepth(line: string): number {
-		const hashTags = LmdLexer.countSymbolsFromBegin(
-			line,
-			RESOURCES.lineStarts.section[1]
-		)
+		const hashTags = LmdLexer.countSymbolsFromBegin(line, RESOURCES.lineStarts.section[1])
 		return 6 - hashTags
 	}
 

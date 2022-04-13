@@ -14,6 +14,11 @@ export type LmdNodeTypeNote = 'note' | 'definition'
 
 export type LmdNodeType = LmdNodeTypeNote | 'root' | 'section' | 'image'
 
+export type LmdLexerOptions = {
+	onlyMakros: boolean
+	readComments: boolean
+}
+
 export type LmdLexerResult = {
 	preamble: string
 	root: LmdNode

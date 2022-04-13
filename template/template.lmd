@@ -46,8 +46,8 @@ _setpdf "C:\Users\marcu\Desktop\Programme\VSCodeExtension\markdownforlatex\src\t
 	" Erklärung
 	eg Beispiel
 	=> Schlussfolgerung
-	lor text
-	land text
+	& text
+	| text
 	[ text
 
 # Paragraph

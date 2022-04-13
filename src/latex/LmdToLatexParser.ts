@@ -1,9 +1,9 @@
 import * as vscode from 'vscode'
-import { LmdLexer } from './LmdLexer'
-import LmdTreeTraversal from './LmdTreeTraversal'
-import { LmdNode } from './types'
-import * as RESOURCES from './RESOURCES.json'
-import ImageManager from './ImageManager'
+import LmdLexer from '../lmd/LmdLexer'
+import LmdTreeTraversal from '../LmdTreeTraversal'
+import { LmdNode } from '../types'
+import * as RESOURCES from '../RESOURCES.json'
+import ImageManager from '../lmd/ImageManager'
 
 type MakroHandler = {
 	name: string
@@ -53,11 +53,7 @@ export default class LmdToLatexParser {
 		const trav = new LmdTreeTraversalForLatex(lexerResult.root)
 		trav.traverse()
 
-		return (
-			'\\documentclass{build/lmdscript}\n' +
-			lexerResult.preamble +
-			trav.result
-		)
+		return '\\documentclass{build/lmdscript}\n' + lexerResult.preamble + trav.result
 	}
 
 	executeMakros(makros: string[]): void {
@@ -156,8 +152,7 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	}
 
 	visitSection(node: LmdNode): void {
-		const sectionCommand =
-			this.TEX_SECTION_COMMANDS[node.hierarchyNumber - 1]
+		const sectionCommand = this.TEX_SECTION_COMMANDS[node.hierarchyNumber - 1]
 		this.result += `\\${sectionCommand}{${node.content[0]}}\n`
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
 			this.openText = '\\begin{notes}' + '% ' + node.content[0] + '\n'
@@ -188,18 +183,14 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		}
 		this.handleContentRest(node.content, 4, -node.hierarchyNumber)
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.openText = LmdTreeTraversalForLatex.getSpaces(
-				-node.hierarchyNumber
-			)
+			this.openText = LmdTreeTraversalForLatex.getSpaces(-node.hierarchyNumber)
 			this.openText += '\\begin{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
 	afterDefinition(node: LmdNode): void {
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += LmdTreeTraversalForLatex.getSpaces(
-				-node.hierarchyNumber
-			)
+			this.result += LmdTreeTraversalForLatex.getSpaces(-node.hierarchyNumber)
 			this.result += '\\end{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
@@ -221,18 +212,14 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		}
 		this.handleContentRest(node.content, 3, -node.hierarchyNumber)
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.openText = LmdTreeTraversalForLatex.getSpaces(
-				-node.hierarchyNumber
-			)
+			this.openText = LmdTreeTraversalForLatex.getSpaces(-node.hierarchyNumber)
 			this.openText += '\\begin{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
 
 	afterNote(node: LmdNode): void {
 		if (LmdTreeTraversalForLatex.hasNoteChild(node)) {
-			this.result += LmdTreeTraversalForLatex.getSpaces(
-				-node.hierarchyNumber
-			)
+			this.result += LmdTreeTraversalForLatex.getSpaces(-node.hierarchyNumber)
 			this.result += '\\end{notes}' + '% ' + node.content[0] + '\n'
 		}
 	}
@@ -244,11 +231,7 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 		this.handleContentRest(node.content, 2, -node.hierarchyNumber)
 	}
 
-	handleContentRest(
-		content: string[],
-		startIndex: number,
-		indent: number
-	): void {
+	handleContentRest(content: string[], startIndex: number, indent: number): void {
 		for (let i = startIndex; i < content.length; i++) {
 			let text = content[i]
 			if (text[0] == '$') {
@@ -262,9 +245,7 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 
 	static hasNoteChild(node: LmdNode): boolean {
 		if (node.children.length == 0) return false
-		return node.children.some(
-			(n) => n.type === 'note' || n.type === 'definition'
-		)
+		return node.children.some((n) => n.type === 'note' || n.type === 'definition')
 	}
 
 	static getSpaces(n: number): string {

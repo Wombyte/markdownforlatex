@@ -5,14 +5,25 @@
 		"ecmaVersion": 6,
 		"sourceType": "module"
 	},
-	"plugins": [
-		"@typescript-eslint",
-		"@typescript-eslint/eslint-plugin",
-		"prettier"
-	],
+	"plugins": ["@typescript-eslint", "@typescript-eslint/eslint-plugin", "prettier"],
 	"extends": ["plugin:prettier/recommended"],
 	"rules": {
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto",
+				"printWidth": 100
+			}
+		],
 		"quotes": ["error", "single"],
+		"max-len": [
+			"error",
+			{
+				"ignoreTemplateLiterals": true,
+				"code": 100,
+				"tabWidth": 4
+			}
+		],
 		"@typescript-eslint/naming-convention": [
 			"warn",
 			{
@@ -29,13 +40,7 @@
 			}
 		],
 		"no-unexpected-multiline": "error",
-		"no-console": "warn",
-		"prettier/prettier": [
-			"error",
-			{
-				"endOfLine": "auto"
-			}
-		]
+		"no-console": "warn"
 	},
 	"ignorePatterns": ["out", "dist", "**/*.d.ts"]
 }
