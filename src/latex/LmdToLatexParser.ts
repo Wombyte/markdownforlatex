@@ -145,6 +145,7 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 
 	visitRoot(node: LmdNode): void {
 		this.result += '\\begin{document}\n'
+		this.handleContentRest(node.content, 0, 0)
 	}
 
 	afterRoot(node: LmdNode): void {

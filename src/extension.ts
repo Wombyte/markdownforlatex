@@ -55,6 +55,7 @@ function initLmdDirectoryFunc(): void {
 		window.showErrorMessage('Creation not successful')
 	}
 	lmdFilePathThenable!.then((lmdFilePath) => {
+		if (!lmdFilePath) return
 		const doc = Uri.file(lmdFilePath)
 		window.showTextDocument(doc)
 	})

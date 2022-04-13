@@ -1,13 +1,15 @@
 import { window, workspace, TextDocument } from 'vscode'
-import { copySync } from 'fs-extra'
-import { renameSync } from 'fs'
+import { copySync, removeSync } from 'fs-extra'
+import { existsSync, renameSync, unlink, unlinkSync } from 'fs'
 import * as path from 'path'
 
 /**
  * @param templateDirPath dir of the template dir
  * @returns path to .lmd file (undefined when error)
  */
-export default function initLmdDirectory(templateDirPath: string): Thenable<string> | undefined {
+export default function initLmdDirectory(
+	templateDirPath: string
+): Thenable<string | undefined> | undefined {
 	const folders = workspace.workspaceFolders
 	if (folders === undefined || folders.length <= 0) {
 		window.showErrorMessage('No Folder Open')
@@ -22,30 +24,41 @@ export default function initLmdDirectory(templateDirPath: string): Thenable<stri
 		prompt: 'test',
 	}
 	return window.showInputBox(inputBoxOptions).then((name) => {
+		if (!name) return undefined
 		createLmdDirectory(templateDirPath, dstPath, name)
 		return path.join(dstPath, `${name}.lmd`)
 	})
 }
 
-function createLmdDirectory(templateDirPath: string, dstPath: string, fileName?: string): void {
-	if (fileName === undefined) return
+function createLmdDirectory(templateDirPath: string, dstPath: string, fileName: string): void {
+	const lmdFilePath = path.join(dstPath, `${fileName}.lmd`)
 
 	// copy files
 	try {
-		copySync(templateDirPath, dstPath)
+		copySync(templateDirPath, dstPath, { overwrite: false })
 	} catch (e) {
 		window.showErrorMessage(
 			'Template directory could not be copied. See console for more information.'
 		)
 	}
 
-	// rename lmd-file
-	try {
-		renameSync(path.join(dstPath, 'template.lmd'), path.join(dstPath, fileName + '.lmd'))
-	} catch (e) {
-		window.showErrorMessage(
-			'The .lmd-file could not be renamed. See console for more information.'
-		)
+	const copiedLmdFile = path.join(dstPath, 'template.lmd')
+	if (existsSync(lmdFilePath)) {
+		try {
+			unlinkSync(copiedLmdFile)
+		} catch (e) {
+			window.showErrorMessage(
+				'Lmd-File already existed, but the new Lmd-File could not be removed'
+			)
+		}
+	} else {
+		try {
+			renameSync(copiedLmdFile, lmdFilePath)
+		} catch (e) {
+			window.showErrorMessage(
+				'The .lmd-file could not be renamed. See console for more information.'
+			)
+		}
 	}
 }
 
