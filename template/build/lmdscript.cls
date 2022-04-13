@@ -31,6 +31,12 @@
 % defines the margin of all pages
 \usepackage[paper=a4paper,left=20mm,right=20mm,top=20mm,bottom=20mm]{geometry}
 
+% define math spacing
+\AtBeginDocument{\setlength{\abovedisplayskip}{4pt}}
+\AtBeginDocument{\setlength{\belowdisplayskip}{4pt}}
+\AtBeginDocument{\setlength{\abovedisplayshortskip}{0pt}}
+\AtBeginDocument{\setlength{\belowdisplayshortskip}{0pt}}
+
 % refs
 \usepackage[
     colorlinks,
@@ -71,3 +77,10 @@
 \renewcommand{\bigwedge}{\displaystyle\smallbigwedge}
 \let\smallbigvee\bigvee
 \renewcommand{\bigvee}{\displaystyle\smallbigvee}
+
+% change lmdreport style
+\definecolor{light-gray}{gray}{0.75}
+\renewcommand{\explbody}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\explhead}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\smplbody}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\smplhead}[1]{\textcolor{light-gray}{\textit{#1}}}

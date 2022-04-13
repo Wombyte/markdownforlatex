@@ -62,7 +62,7 @@
 \makeatletter
 \newcommand{\defineNoteCommand}[4]{
 	\expandafter\def\csname #1bullet\endcsname##1{{\bf ##1}}
-	\expandafter\def\csname #1head\endcsname##1{{#3 ##1:}}
+	\expandafter\def\csname #1head\endcsname##1{{#3 ##1}}
 	\expandafter\def\csname #1body\endcsname##1{{#4 ##1}}
 	\expandafter\def\csname #1\endcsname{
 		\@ifnextchar[%
@@ -70,7 +70,7 @@
 			{\csname @#1WithoutHead\endcsname}
 	}
 	\expandafter\def\csname @#1WithHead\endcsname[##1]##2{
-		\item[\csname #1bullet\endcsname{#2}]\csname #1head\endcsname{##1}\csname #1body\endcsname{##2}
+		\item[\csname #1bullet\endcsname{#2}]\csname #1head\endcsname{##1:} \csname #1body\endcsname{##2}
 	}
 	\expandafter\def\csname @#1WithoutHead\endcsname##1{
 		\item[\csname #1bullet\endcsname{#2}]\csname #1body\endcsname{##1}
@@ -83,9 +83,9 @@
 \defineNoteCommand{nota}{\ding{46}}{\bf}{} % !
 \defineNoteCommand{theo}{$\circledast$}{\bf}{} % *
 \defineNoteCommand{conc}{$\Rightarrow$}{\bf}{} % =>
-\defineNoteCommand{lornote}{$\lor$}{\bf}{} % |
-\defineNoteCommand{landnote}{$\land$}{\bf}{} % &
-\defineNoteCommand{expl}{\glqq\grqq}{\it}{\it} % "
+\defineNoteCommand{lornote}{$\mid$}{\bf}{} % |
+\defineNoteCommand{landnote}{\&}{\bf}{} % &
+\defineNoteCommand{expl}{\textcolor{gray}{\grqq}}{\it}{\it} % "
 \defineNoteCommand{smpl}{$\egsymbol$}{\it}{\it} % eg
 \defineNoteCommand{blank}{}{}{} % [
 

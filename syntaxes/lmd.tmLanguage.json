@@ -48,7 +48,7 @@
 			]
 		},
 		"defaultnote": {
-			"begin": "(,|\\.|=>|&|!|\\||\\[)",
+			"begin": "\t+(,|\\.|=>|&|!|\\||\\[)",
 			"beginCaptures": {
 				"0": { "name": "mld.note.default" }
 			},
@@ -66,7 +66,7 @@
 			]
 		},
 		"theorynote": {
-			"begin": "\\*",
+			"begin": "\t+\\*",
 			"beginCaptures": {
 				"0": { "name": "mld.note.theory" }
 			},
@@ -84,7 +84,7 @@
 			]
 		},
 		"plusnote": {
-			"begin": "\\+",
+			"begin": "\t+\\+",
 			"beginCaptures": {
 				"0": { "name": "mld.note.advantage" }
 			},
@@ -102,7 +102,7 @@
 			]
 		},
 		"minusnote": {
-			"begin": "\\-",
+			"begin": "\t+\\-",
 			"beginCaptures": {
 				"0": { "name": "mld.note.disadvantage" }
 			},
@@ -121,7 +121,7 @@
 		},
 		"italicnote": {
 			"name": "mld.note.italic",
-			"begin": "(\"|eg)",
+			"begin": "\t+(\"|eg)",
 			"end": "$\n?",
 			"patterns": [
 				{
@@ -153,7 +153,7 @@
 			]
 		},
 		"defnote": {
-			"begin": ">",
+			"begin": "\t+>",
 			"beginCaptures": {
 				"0": { "name": "mld.note.definition" }
 			},

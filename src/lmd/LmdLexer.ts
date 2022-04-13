@@ -132,46 +132,13 @@ export default class LmdLexer {
 	}
 
 	onMathLine(lmdLexer: LmdLexer, line: string): void {
-		// console.log(line)
-		const lastIndex = lmdLexer.currentNode.content.length - 1
 		line = LmdLexer.prepareLine(line)
-
-		if (SETTINGS.compactLmdNoteLines) {
-			if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
-				lmdLexer.currentNode.content[lastIndex] += line
-			} else {
-				lmdLexer.currentNode.content.push(line)
-			}
-		} else {
-			lmdLexer.currentNode.content.push(line)
-		}
+		lmdLexer.currentNode.content.push(line)
 	}
 
 	onLatexLine(lmdLexer: LmdLexer, line: string): void {
 		line = LmdLexer.prepareLine(line)
-		if (SETTINGS.compactLmdNoteLines) {
-			const type = lmdLexer.currentNode.type
-			if (type === 'image' || type === 'section') {
-				lmdLexer.currentNode.content.push(line)
-			} else {
-				const lastIndex = lmdLexer.currentNode.content.length - 1
-				if (lmdLexer.currentNode.content[lastIndex][0] === '$') {
-					lmdLexer.currentNode.content.push(line)
-				} else {
-					lmdLexer.currentNode.content[lastIndex] += '\n' + LmdLexer.prepareLine(line)
-				}
-			}
-		} else {
-			lmdLexer.currentNode.content.push(line)
-		}
-	}
-
-	goto(lmdLexer: LmdLexer, depth: number): void {
-		if (lmdLexer.currentNode.hierarchyNumber < depth) return
-		while (lmdLexer.currentNode.hierarchyNumber > depth) {
-			if (!lmdLexer.currentNode.parent) return
-			lmdLexer.currentNode = lmdLexer.currentNode.parent
-		}
+		lmdLexer.currentNode.content.push(line)
 	}
 
 	pushChild(lmdLexer: LmdLexer, type: LmdNodeType, text: string): void {
@@ -205,12 +172,7 @@ export default class LmdLexer {
 	}
 
 	static prepareLine(line: string): string {
-		return line.replace(/\t/g, '')
-	}
-
-	static getSectionDepth(line: string): number {
-		const hashTags = LmdLexer.countSymbolsFromBegin(line, RESOURCES.lineStarts.section[1])
-		return 6 - hashTags
+		return line.replace(/(\t|\n)/g, '')
 	}
 
 	static countSymbolsFromBegin(line: string, symbol: string): number {

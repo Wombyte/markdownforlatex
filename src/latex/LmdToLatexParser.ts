@@ -107,9 +107,6 @@ export default class LmdToLatexParser {
 	}
 }
 
-/**
- * needs SETTINGS.compactLmdNodeLines to be true
- */
 class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	result: string
 
@@ -233,15 +230,39 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	}
 
 	handleContentRest(content: string[], startIndex: number, indent: number): void {
-		for (let i = startIndex; i < content.length; i++) {
-			let text = content[i]
-			if (text[0] == '$') {
-				let math = content[i].replace('\\$\\$\\$\\$', '\\\\')
-				math = math.substring(2, math.length - 2)
-			}
+		if (startIndex >= content.length) return
+
+		const addLine = (line: string, isMath: boolean): void => {
 			this.result += LmdTreeTraversalForLatex.getSpaces(indent)
-			this.result += text + '\n'
+			if (isMath) {
+				this.result += `\\begin{align*}${line}\\end{align*}\n`
+			} else {
+				this.result += line + '\n'
+			}
 		}
+		const removeMathSymbols = (line: string): string => {
+			return line.replace(/\$\$/g, '')
+		}
+
+		let lastWasMath = false
+		let line = ''
+		for (let i = startIndex; i < content.length; i++) {
+			let isMath = content[i].startsWith('$$')
+			if (isMath == lastWasMath) {
+				if (isMath) {
+					line += '\\\\' + removeMathSymbols(content[i])
+				} else {
+					line += ' ' + content[i]
+				}
+			} else {
+				if (line != '') {
+					addLine(line, lastWasMath)
+				}
+				line = isMath ? removeMathSymbols(content[i]) : content[i]
+			}
+			lastWasMath = isMath
+		}
+		addLine(line, lastWasMath)
 	}
 
 	static hasNoteChild(node: LmdNode): boolean {

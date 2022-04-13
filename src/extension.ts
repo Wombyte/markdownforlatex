@@ -22,7 +22,10 @@ export function activate(context: ExtensionContext): void {
 	// Markdown For Latex: Create PDF
 	let createPdf = commands.registerCommand('markdownforlatex.createPdf', createPdfFunc)
 
-	extensionContext.subscriptions.push(initDir, parseToLatex, renderImages, createPdf)
+	// Markdown For Latex: Run Latex
+	let runLatex = commands.registerCommand('markdownforlatex.runLatex', runLatexFunc)
+
+	extensionContext.subscriptions.push(initDir, parseToLatex, renderImages, createPdf, runLatex)
 }
 
 export function deactivate(): void {}
@@ -99,6 +102,18 @@ function createPdfFunc(): void {
 		return
 	}
 	parseToLatexFunc()
+	const texFilePath = getLatexFilePath(lmdFile)
+	runLatex(texFilePath, () => {
+		window.showInformationMessage('PDF created')
+	})
+}
+
+function runLatexFunc(): void {
+	const lmdFile = getOpenLmdFile()
+	if (!lmdFile) {
+		window.showErrorMessage('No .lmd-File')
+		return
+	}
 	const texFilePath = getLatexFilePath(lmdFile)
 	runLatex(texFilePath, () => {
 		window.showInformationMessage('PDF created')

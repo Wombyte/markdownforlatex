@@ -16,7 +16,8 @@
 		"onCommand:markdownforlatex.initLmdDir",
 		"onCommand:markdownforlatex.parseToLatex",
 		"onCommand:markdownforlatex.renderImages",
-		"onCommand:markdownforlatex.createPdf"
+		"onCommand:markdownforlatex.createPdf",
+		"onCommand:markdownforlatex.runLatex"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -63,6 +64,10 @@
 			{
 				"command": "markdownforlatex.createPdf",
 				"title": "Markdown For Latex: Create PDF"
+			},
+			{
+				"command": "markdownforlatex.runLatex",
+				"title": "Markdown For Latex: Run Latex"
 			}
 		],
 		"snippets": [

@@ -8,6 +8,10 @@ type NoteHandler = {
 	length: number
 }
 
+/**
+ * Works on the tree structure from the LmdLexer. The content of every node is transformed
+ * to have a readable structure.
+ */
 export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 	noteRegexes: NoteHandler[]
 
@@ -30,6 +34,12 @@ export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 		node.content[0] = node.content[0].replace(new RegExp('#+\\s'), '')
 	}
 
+	/**
+	 * content[0]: note symbol
+	 * content[1]: head or ''
+	 * content[2]: rest
+	 * content[>2]: rest content
+	 */
 	visitNote(node: LmdNode): void {
 		if (node.content.length <= 0) return
 
@@ -55,6 +65,13 @@ export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 		node.content.unshift(start.text)
 	}
 
+	/**
+	 * content[0]: '>'
+	 * content[1]: pre bold
+	 * content[2]: bold
+	 * content[3]: post bold
+	 * content[>3]: rest
+	 */
 	visitDefinition(node: LmdNode): void {
 		if (node.content.length <= 0) return
 
@@ -70,6 +87,12 @@ export default class LmdTreeNodeLexer extends LmdTreeTraversal {
 		node.content.unshift('>')
 	}
 
+	/**
+	 * content[0]: 'img'
+	 * content[1]: name
+	 * content[2]: size
+	 * content[>2]: rest
+	 */
 	visitImage(node: LmdNode): void {
 		if (node.content.length <= 0) return
 

@@ -11,6 +11,7 @@
     - tiny example for `tmlanguage.json`-grammar \* Scope Inspector
 3. [Understand TextMate-Grammar](https://www.apeth.com/nonblog/stories/textmatebundle.html)
     - good explanation (in contrast to the [documentation](https://macromates.com/manual/en/language_grammars)
+4. [Understand Snippets](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_creating-your-own-snippets)
 
 <br/><br/><br/>
 
@@ -37,12 +38,9 @@
 1. register command in `activate()` in `extension.ts`
 
 ```ts
-let varcommandname = vscode.commands.registerCommand(
-	'helloworld.commandname',
-	() => {
-		// do something
-	}
-)
+let varcommandname = vscode.commands.registerCommand('helloworld.commandname', () => {
+	// do something
+})
 context.subscriptions.push(varcommandname)
 ```
 

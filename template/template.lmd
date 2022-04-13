@@ -1,8 +1,6 @@
 \title{Beispiel-LMD-Dokument}
 \author{Marcus Wunderlich}
 
-\renewcommand{\explbody}[1]{\textcolor{gray}{\textit{#1}}}
-
 % above this line is preamble
 _startdocument
 % below this line is content
@@ -26,7 +24,11 @@ _setpdf "C:\Users\marcu\Desktop\Programme\VSCodeExtension\markdownforlatex\src\t
 	, Stichpunkt text 
 	,Stichpunkt  text $ $
 	. Aufzählung text
-		$$ lsdjbf sdlsdfd$$
+		$$ lsdjbf &sdlsdfd$$
+		$$ &test $$
+	Aufzählung geht weiter
+	und weiter
+		$$ test $$
 	.Aufzählung  text
 		, Stichpunkt text
 			% at most 3 layers
@@ -42,9 +44,9 @@ _setpdf "C:\Users\marcu\Desktop\Programme\VSCodeExtension\markdownforlatex\src\t
 	- Nachteil text
 	-Nachteil  text
 	* Satz text
+		"Erklärung  Erklärung
 	*Satz  text
-	" Erklärung
-	eg Beispiel
+		egBeispiel  Beispiel
 	=> Schlussfolgerung
 	& text
 	| text
