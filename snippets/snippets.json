@@ -1,0 +1,13 @@
+{
+	"Central Image": {
+		"prefix": ["cci"],
+		"body": [
+			"\\begin{center}",
+			"img ${1:name} ${2:size}",
+			"_crimg ${1:name} ${3:page}",
+			"\\end{center}",
+			"$0"
+		],
+		"description": "A centered image"
+	}
+}
