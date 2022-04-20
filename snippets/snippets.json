@@ -4,7 +4,7 @@
 		"body": [
 			"\\begin{center}",
 			"img ${1:name} ${2:size}",
-			"_crimg ${1:name} ${3:page}",
+			"_crimg \"${1:name}\" ${3:page}",
 			"\\end{center}",
 			"$0"
 		],

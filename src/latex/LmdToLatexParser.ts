@@ -63,7 +63,10 @@ export default class LmdToLatexParser {
 				vscode.window.showErrorMessage(`makro has no name: ${makro}`)
 				return
 			}
+			console.log(this.MAKRO_HANDLER)
 			const handler = this.MAKRO_HANDLER.find((h) => h.regex?.test(makro))
+			console.log(handler)
+			console.log(makro)
 			if (!handler) {
 				vscode.window.showErrorMessage(`no such makro found: ${makro}`)
 				return

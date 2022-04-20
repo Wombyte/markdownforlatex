@@ -80,7 +80,9 @@
 
 % change lmdreport style
 \definecolor{light-gray}{gray}{0.75}
-\renewcommand{\explbody}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\explbullet}[1]{\textcolor{light-gray}{\textbf{\grqq}}}
 \renewcommand{\explhead}[1]{\textcolor{light-gray}{\textit{#1}}}
-\renewcommand{\smplbody}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\explbody}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\smplbullet}[1]{\textcolor{light-gray}{\textbf{eg}}}
 \renewcommand{\smplhead}[1]{\textcolor{light-gray}{\textit{#1}}}
+\renewcommand{\smplbody}[1]{\textcolor{light-gray}{\textit{#1}}}

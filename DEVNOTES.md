@@ -6,6 +6,7 @@
     - list of required frameworks (Node.js, Git, Yeoman, VsCodeExtensionGenerator)
     - generation of HelloWorld-Extension (alert "HelloWorld" on Command)
     - (Debugging)
+    - [Installation](https://vscode-docs.readthedocs.io/en/stable/extensions/install-extension/)
 2. Add [Language Grammar](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
     - How to create a language-extension? (the generated files can merge into an existing extension without causing problems)
     - tiny example for `tmlanguage.json`-grammar \* Scope Inspector

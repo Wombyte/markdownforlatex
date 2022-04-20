@@ -1,12 +1,12 @@
 import * as path from 'path'
 import { exec } from 'child_process'
-import { window, workspace, Uri } from 'vscode'
+import { window } from 'vscode'
 
 export default function runLatex(texFilePath: string, onSuccess: () => void): void {
 	const fileName = path.basename(texFilePath)
 	const dirName = path.dirname(texFilePath)
 	exec(
-		`cd ${dirName} && pdflatex.exe -synctex=1 -interaction=nonstopmode ${fileName} -aux-directory=build`,
+		`cd "${dirName}" && pdflatex.exe -synctex=1 -interaction=nonstopmode "${fileName}" -aux-directory=build`,
 		(error, stdout, stderr) => {
 			if (error) {
 				window.showErrorMessage(error.message)
