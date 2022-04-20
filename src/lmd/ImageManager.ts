@@ -28,7 +28,7 @@ export default class ImageManager {
 			throw Error('image not created. Pdf is not set')
 		}
 		const dst = path.join(this.dstPath, `${name}`)
-		if (existsSync(dst)) return
+		if (existsSync(`${dst}.png`)) return
 
 		const options = {
 			firstPageToConvert: startPage,
