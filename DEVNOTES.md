@@ -96,3 +96,9 @@ context.subscriptions.push(varcommandname)
 ### <u>Find Theme Files</u>
 
 -   folder: `{user}\AppData\Local\Programs\Microsoft VS Code\resources\app\extensions\theme-defaults\themes`
+
+# <u>Features</u>
+
+## Lexer
+
+## Latex

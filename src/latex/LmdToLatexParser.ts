@@ -232,13 +232,22 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	handleContentRest(content: string[], startIndex: number, indent: number): void {
 		if (startIndex >= content.length) return
 
+		const command = this.TEX_NOTE_COMMANDS.get(content[0])
+
+		const allowFormat = (line: string): boolean => {
+			return line.indexOf('\\begin{') == -1 && line.indexOf('\\end{') == -1
+		}
+
 		const addLine = (line: string, isMath: boolean): void => {
+			const format = allowFormat(line)
 			this.result += LmdTreeTraversalForLatex.getSpaces(indent)
+			this.result += command && format ? `\\${command}body{` : ''
 			if (isMath) {
-				this.result += `\\begin{align*}${line}\\end{align*}\n`
+				this.result += `\\begin{align*}${line}\\end{align*}`
 			} else {
-				this.result += line + '\n'
+				this.result += line
 			}
+			this.result += command && format ? '}\n' : '\n'
 		}
 		const removeMathSymbols = (line: string): string => {
 			return line.replace(/\$\$/g, '')

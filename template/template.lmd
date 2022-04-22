@@ -44,7 +44,9 @@ _setpdf "C:\Users\marcu\Desktop\Programme\VSCodeExtension\markdownforlatex\src\t
 	- Nachteil text
 	-Nachteil  text
 	* Satz text
-		"Erklärung  Erklärung
+		"Erklärung  Erklärung mit viel text
+			$$und Formeln$$
+		und noch mehr Text
 	*Satz  text
 		egBeispiel  Beispiel
 	=> Schlussfolgerung
