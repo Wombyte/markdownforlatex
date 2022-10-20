@@ -96,3 +96,45 @@ context.subscriptions.push(varcommandname)
 ### <u>Find Theme Files</u>
 
 -   folder: `{user}\AppData\Local\Programs\Microsoft VS Code\resources\app\extensions\theme-defaults\themes`
+
+# Bugs
+
+-   wrong indent "paragraph > img > explanation" (see KogSys)
+-   csquotes-package is not imported
+
+# <u>Features</u>
+
+## Lexer
+
+-   allow indented commands (eg \t\t_crimg...)
+-   allow note with head and no body
+-   allow files without \_startdocument
+-   add working directory and short pdf links
+-   add simple math syntax to decrease braces
+    -   `V_subscript ^superscript` statt `V_{subscript}^{superscript}`
+    -   `V*` und `V'` statt `V^*` und `V^\prime`
+    -   `alpha` statt `\alpha`
+
+## Latex
+
+## VsCode
+
+-   bracket-indication for \\{\\}
+-   snippets for
+    -   chapter (#####) with 5 blank lines (section, subsection, ...)
+    -   definition
+-   integrated latex error messages
+    -   for each line (especially for math stuff)
+-   Waiting indicator for: create pdf, parse latex, render images
+-   prettier for lmd
+    -   automatic blank lines for chapter, section, ...
+-   collapseable chapter, section, ...
+-   outline in treeview
+
+## Gimp
+
+-   selection with lasso
+
+## Softwaretechnik
+
+-   "deploy" to extension folder via git

@@ -79,8 +79,27 @@ export default class LmdToLatexParser {
 
 	handleCreateImage(parser: LmdToLatexParser, args: string[]): void {
 		const name = args[0]
-		const page = LmdToLatexParser.toNumber(args[1])
-		parser.imageManager.createImage(name, page, page)
+		const items = args[1].split(',')
+		if (items.length === 0) return
+		if (items.length === 1) {
+			const page = parseInt(items[0], 10)
+			parser.imageManager.createImage(name, page, page)
+			return
+		}
+		const pageNumbers: number[] = []
+		items.forEach((item) => {
+			if (item.includes('-')) {
+				const [start, end] = item.split('-').map((str) => parseInt(str, 10))
+				for (let i = start; i <= end; i++) {
+					pageNumbers.push(i)
+				}
+			} else {
+				pageNumbers.push(parseInt(item, 10))
+			}
+		})
+		pageNumbers.forEach((page, index) => {
+			parser.imageManager.createImage(`${name}${index + 1}`, page, page)
+		})
 	}
 
 	static getArguments(command: string): string[] {
@@ -232,13 +251,22 @@ class LmdTreeTraversalForLatex extends LmdTreeTraversal {
 	handleContentRest(content: string[], startIndex: number, indent: number): void {
 		if (startIndex >= content.length) return
 
+		const command = this.TEX_NOTE_COMMANDS.get(content[0])
+
+		const allowFormat = (line: string): boolean => {
+			return line.indexOf('\\begin{') == -1 && line.indexOf('\\end{') == -1
+		}
+
 		const addLine = (line: string, isMath: boolean): void => {
+			const format = allowFormat(line)
 			this.result += LmdTreeTraversalForLatex.getSpaces(indent)
+			this.result += command && format ? `\\${command}body{` : ''
 			if (isMath) {
-				this.result += `\\begin{align*}${line}\\end{align*}\n`
+				this.result += `\\begin{align*}${line}\\end{align*}`
 			} else {
-				this.result += line + '\n'
+				this.result += line
 			}
+			this.result += command && format ? '}\n' : '\n'
 		}
 		const removeMathSymbols = (line: string): string => {
 			return line.replace(/\$\$/g, '')
