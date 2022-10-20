@@ -97,6 +97,8 @@ context.subscriptions.push(varcommandname)
 
 -   folder: `{user}\AppData\Local\Programs\Microsoft VS Code\resources\app\extensions\theme-defaults\themes`
 
+<<<<<<< HEAD
+
 # Bugs
 
 -   wrong indent "paragraph > img > explanation" (see KogSys)
@@ -138,3 +140,5 @@ context.subscriptions.push(varcommandname)
 ## Softwaretechnik
 
 -   "deploy" to extension folder via git
+
+## Latex
