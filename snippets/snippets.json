@@ -9,5 +9,25 @@
 			"$0"
 		],
 		"description": "A centered image"
+	},
+	"LMD-Start": {
+		"prefix": ["lmd"],
+		"body": [
+			"\\title{${1:title}}",
+			"\\author{${2:author}}",
+			"",
+			"% preamble",
+			"",
+			"",
+			"_startdocument",
+			"",
+			"\\maketitle",
+			"\\tableofcontents",
+			"\\pagebreak",
+			"",
+			"_setpdf \"${3:pdfpath}\"",
+			"",
+			"##### Chapter"
+		]
 	}
 }

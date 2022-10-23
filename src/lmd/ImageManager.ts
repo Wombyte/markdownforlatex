@@ -4,6 +4,7 @@ import { Poppler } from 'node-poppler'
 import path = require('path')
 
 export default class ImageManager {
+	currentPdfDirPath?: string
 	currentPdfPath?: string
 	dstPath: string
 	poppler: Poppler
@@ -13,14 +14,25 @@ export default class ImageManager {
 		this.poppler = new Poppler()
 	}
 
-	set pdfPath(path: string) {
-		if (!path.endsWith('.pdf')) {
-			throw Error(`path ${path} is not a .pdf-file`)
+	set pdfDirPath(pdfDirPath: string) {
+		if (!existsSync(pdfDirPath)) {
+			throw Error(`path ${pdfDirPath} does not exist`)
 		}
-		if (!existsSync(path)) {
-			throw Error(`path ${path} does not exist`)
+		this.currentPdfDirPath = pdfDirPath
+	}
+
+	set pdfPath(pdfPath: string) {
+		const p =
+			this.currentPdfDirPath && !pdfPath.includes(':')
+				? path.join(this.currentPdfDirPath, pdfPath)
+				: pdfPath
+		if (!p.endsWith('.pdf')) {
+			throw Error(`path ${p} is not a .pdf-file`)
 		}
-		this.currentPdfPath = path
+		if (!existsSync(p)) {
+			throw Error(`path ${p} does not exist`)
+		}
+		this.currentPdfPath = p
 	}
 
 	createImage(name: string, startPage: number, endPage: number): void {

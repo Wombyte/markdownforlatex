@@ -20,6 +20,11 @@ export default class LmdToLatexParser {
 
 	private MAKRO_HANDLER: MakroHandler[] = [
 		{
+			name: RESOURCES.makros.cwd.name,
+			args: RESOURCES.makros.cwd.args,
+			handler: this.handleSetPdfDir,
+		},
+		{
 			name: RESOURCES.makros.setpdf.name,
 			args: RESOURCES.makros.setpdf.args,
 			handler: this.handleSetPdf,
@@ -75,6 +80,11 @@ export default class LmdToLatexParser {
 	handleSetPdf(parser: LmdToLatexParser, args: string[]): void {
 		const path = args[0]
 		parser.imageManager.pdfPath = path
+	}
+
+	handleSetPdfDir(parser: LmdToLatexParser, args: string[]): void {
+		const path = args[0]
+		parser.imageManager.pdfDirPath = path
 	}
 
 	handleCreateImage(parser: LmdToLatexParser, args: string[]): void {

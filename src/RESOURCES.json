@@ -8,28 +8,19 @@
 		"crimg": {
 			"name": "crimg",
 			"args": ["string", "int"]
+		},
+		"cwd": {
+			"name": "cwd",
+			"args": ["string"]
 		}
 	},
 	"makroArgRegex": {
 		"string": "\".+\"",
 		"int": "(0|[1-9]\\d*)"
 	},
-	"noteStarts": [
-		",",
-		".",
-		"+",
-		"-",
-		"*",
-		"eg",
-		"\"",
-		"!",
-		"=>",
-		"&",
-		"|",
-		"["
-	],
+	"noteStarts": [",", ".", "+", "-", "*", "eg", "\"", "!", "=>", "&", "|", "["],
 	"lineStarts": {
-		"makro": "^_",
+		"makro": "^\t*_",
 		"section": "^#",
 		"def": "^\t*>",
 		"note": "^\t*(,|\\.|\\+|-|\\*|eg|\"|!|=>|&|\\||\\[)",
